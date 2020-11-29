@@ -18,7 +18,7 @@ description: Camera app that labels objects for ML Training purposes
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: ">=2.2.2 <3.0.0"
 
 dependencies:
   flutter:
@@ -30,7 +30,27 @@ dependencies:
   camera:
   path_provider:
   path:
+  firebase_core: 0.5.2+1
 
+  # Database
+  cloud_firestore: 0.14.3+1
+
+  # User Auth
+  firebase_auth:  0.18.3+1
+  google_sign_in:
+
+  # Analytics
+  firebase_analytics:
+
+  # Crashlytics
+  firebase_crashlytics:
+
+  # Performance
+  firebase_performance:
+  firebase_storage: 5.1.0
+
+  image_cropper: 1.0.2
+  image_picker: 0.6.0+17
 
 dev_dependencies:
   flutter_test:
