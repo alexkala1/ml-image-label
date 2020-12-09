@@ -6,17 +6,17 @@ export default {
     titleTemplate: '%s - client',
     title: 'client',
     meta: [{
-        charset: 'utf-8'
-      },
-      {
-        name: 'viewport',
-        content: 'width=device-width, initial-scale=1'
-      },
-      {
-        hid: 'description',
-        name: 'description',
-        content: ''
-      }
+      charset: 'utf-8'
+    },
+    {
+      name: 'viewport',
+      content: 'width=device-width, initial-scale=1'
+    },
+    {
+      hid: 'description',
+      name: 'description',
+      content: ''
+    }
     ],
     link: [{
       rel: 'icon',
@@ -49,7 +49,7 @@ export default {
 
   // Axios module configuration (https://go.nuxtjs.dev/config-axios)
   axios: {
-    baseURL: "http://localhost:8080/"
+    baseURL: "http://localhost:3001/api/v1"
   },
 
   // Vuetify module configuration (https://go.nuxtjs.dev/config-vuetify)
@@ -82,26 +82,16 @@ export default {
     strategies: {
       local: {
         endpoints: {
-          login: {
-            url: '/auth/login',
-            method: 'post',
-            propertyName: 'token'
-          },
-          logout: {
-            url: '/auth/logout',
-            method: 'post'
-          },
-          user: {
-            url: '/sessions/user',
-            method: 'get',
-            propertyName: 'user'
-          }
+          login: { url: '/auth/login', method: 'post', propertyName: 'data.token', },
+          user: {url: '/auth/fetchUser', method: 'get', propertyName: 'user'},
+          logout: false,
         },
-        // tokenRequired: true,
-        tokenType: '',
-        // globalToken: true,
-        // autoFetchUser: true
-      }
-    }
-  }
+        tokenRequired: true,
+        tokenType: 'bearer',
+        tokenName: 'Authorization',
+        globalToken: true,
+        autoFetchUser: false
+      },
+    },
+  },
 }

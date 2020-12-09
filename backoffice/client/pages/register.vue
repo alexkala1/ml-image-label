@@ -4,14 +4,38 @@
 			<v-col cols="6">
 				<div>
 					<v-text-field
-						label="Username"
+						label="Email"
 						persisted-hint
 						rounded
 						outlined
 						solo
 						type="text"
-						name="username"
-						v-model="form.username"
+						name="email"
+						v-model="form.email"
+					></v-text-field>
+				</div>
+				<div>
+					<v-text-field
+						label="First Name"
+						persisted-hint
+						rounded
+						outlined
+						solo
+						type="text"
+						name="firstName"
+						v-model="form.firstName"
+					></v-text-field>
+				</div>
+				<div>
+					<v-text-field
+						label="Last Name"
+						persisted-hint
+						rounded
+						outlined
+						solo
+						type="text"
+						name="lastName"
+						v-model="form.lastName"
 					></v-text-field>
 				</div>
 				<div>
@@ -36,24 +60,28 @@
 </template>
 
 <script>
-
 export default {
-  auth: false,
-	name: "Register",
+	auth: false,
+	name: 'Register',
 	components: {},
 	data() {
 		return {
 			form: {
-				username: "",
-				password: "",
+				email: '',
+				firstName: '',
+				lastName: '',
+				userType: 'admin',
+				password: '',
 			},
 			showError: false,
-		};
+		}
 	},
 	methods: {
 		async submit() {
-			this.$router.push("/login");
+			const user = await this.$axios.post('/auth/register', this.form)
+			console.log(user)
+			this.$router.push('/login')
 		},
 	},
-};
+}
 </script>
