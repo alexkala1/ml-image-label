@@ -4,9 +4,9 @@
   "description": " A basic starter for an express.js API",
   "main": "index.js",
   "scripts": {
+    "db": "mongod",
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
-    "lint": "eslint --fix src",
     "test": "mocha --exit"
   },
   "keywords": [],
@@ -21,12 +21,11 @@
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "helmet": "^4.2.0",
-    "morgan": "^1.10.0"
+    "mongoose": "^5.11.4",
+    "morgan": "^1.10.0",
+    "prettier": "^2.2.1"
   },
   "devDependencies": {
-    "eslint": "^7.14.0",
-    "eslint-config-airbnb-base": "^14.2.1",
-    "eslint-plugin-import": "^2.22.1",
     "mocha": "^8.2.1",
     "nodemon": "^2.0.6",
     "supertest": "^6.0.1"
