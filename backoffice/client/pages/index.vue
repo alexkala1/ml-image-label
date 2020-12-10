@@ -72,7 +72,6 @@
 					</a>
 				</v-card-text>
 				<v-card-actions>
-					<v-btn color="primary" @click="logout">Log Out</v-btn>
 					<v-spacer />
 					<v-btn color="primary" nuxt to="/inspire"> Continue </v-btn>
 				</v-card-actions>
