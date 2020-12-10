@@ -17,3 +17,8 @@ export default {
 	},
 }
 </script>
+<style scoped>
+#app {
+  font-family: "Nunito";
+}
+</style>
