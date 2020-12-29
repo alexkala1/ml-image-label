@@ -2,6 +2,8 @@ const express = require('express')
 
 const router = express.Router()
 
+const Image = require('../models/image')
+
 /**
  * Basic CRUD functionality for image
  * (Create, Read, Update, Delete).
@@ -15,8 +17,33 @@ router.post('/', (req, res, next) => {
 })
 
 // Get all images
-router.get('/', (req, res, next) => {
+router.get('/non-verified', async (req, res, next) => {
+	try {
+		const images = await Image.find({ isVerified: false })
+		return res.json(images)
+	} catch (error) {
+		return res.json(error)
+	}
+})
 
+// Get all images
+router.get('/verified', async (req, res, next) => {
+	try {
+		const images = await Image.find({ isVerified: true })
+		return res.json(images)
+	} catch (error) {
+		return res.json(error)
+	}
+})
+
+// Get all images
+router.get('/verified', async (req, res, next) => {
+	try {
+		const images = await Image.find({ isVerified: true })
+		return res.json(images)
+	} catch (error) {
+		return res.json(error)
+	}
 })
 
 // Get image by id
