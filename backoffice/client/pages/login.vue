@@ -7,7 +7,7 @@
 						class="font-weight-light text-center"
 						style="word-break: break-word"
 					>
-						Καλωσηρθατε στο my Image-Labeling-Backoffice
+						Login to my Image-Labeling-Backoffice
 					</h2>
 				</v-card-title>
 				<v-card-text full-height>
