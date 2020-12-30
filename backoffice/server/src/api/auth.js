@@ -36,23 +36,20 @@ router.post('/register', async (req, res) => {
 	return res.json(user)
 })
 
-// Register new user
+/**
+ * Handles login functionality. Uses JWT for authentication.
+ * WIP: Discuss login expiration time for JWT as well as
+ * the checks for a valid person.
+ */
 router.post('/login', async (req, res) => {
 	const user = await User.findOne({
 		email: req.body.email,
 	})
 
 	// Check credentials
-	if (
-		bcrypt.compareSync(req.body.password, user.password) &&
-		user !== undefined
-	) {
+	if (bcrypt.compareSync(req.body.password, user.password) && user !== undefined) {
 		// Sign user's email with jwt token
-		const token = jwt.sign(
-			{ email: req.body.email },
-			process.env.ACCESS_TOKEN,
-			{ expiresIn: '15m' }
-		)
+		const token = jwt.sign({ email: req.body.email }, process.env.ACCESS_TOKEN, { expiresIn: '15m' })
 
 		// Create session user
 		const response = {
@@ -72,19 +69,22 @@ router.post('/login', async (req, res) => {
 		throw new Error('Δεν υφίσταται χρήστης με αυτό το email')
 })
 
-// Register new user
+/**
+ * This handles the check for user's JWT if exist and if
+ * it is valid. Front logs user out in case something's wrong
+ */
 router.get('/fetchUser', (req, res) => {
 	const authHeader = req.headers['authorization']
 	const token = authHeader && authHeader.split(' ')[1]
 	if (token === null) return res.send('fail')
 
 	jwt.verify(token, process.env.ACCESS_TOKEN, async (err, user) => {
-		if (err) {
+		if (err)
 			return res.sendStatus(403)
-		}
+
 		const userResponse = await User.findOne({ email: user.email })
 
-		return res.json({user: userResponse})
+		return res.json({ user: userResponse })
 	})
 })
 

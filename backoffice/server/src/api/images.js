@@ -29,7 +29,7 @@ router.post('/', async (req, res, next) => {
 	return res.json(image)
 })
 
-// Get all images
+// Get all rejected images
 router.get('/rejected', async (req, res, next) => {
 	try {
 		const images = await Image.find({ isVerified: false })
@@ -40,7 +40,7 @@ router.get('/rejected', async (req, res, next) => {
 	}
 })
 
-// Get all images
+// Get all rejected images from a user
 router.get('/rejected/:user_id', async (req, res, next) => {
 	try {
 		const images = await Image.find({ isVerified: true, id: req.params.user_id })
@@ -51,7 +51,7 @@ router.get('/rejected/:user_id', async (req, res, next) => {
 	}
 })
 
-// Get all images
+// Get all verified images
 router.get('/verified', async (req, res, next) => {
 	try {
 		const images = await Image.find({ isVerified: true })
@@ -62,7 +62,7 @@ router.get('/verified', async (req, res, next) => {
 	}
 })
 
-// Get all images
+// Get all verified images from a user
 router.get('/verified/:user_id', async (req, res, next) => {
 	try {
 		const images = await Image.find({ isVerified: true, id: req.params.user_id })
