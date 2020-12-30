@@ -22,7 +22,7 @@ const imageSchema = mongoose.Schema({
         data: Buffer,
         contentType: String
     },
-    imageName: {
+    "imageName": {
         required: true,
         type: String
     },
