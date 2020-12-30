@@ -49,9 +49,6 @@
 </template>
 
 <script>
-import Logo from '~/components/Logo.vue'
-import VuetifyLogo from '~/components/VuetifyLogo.vue'
-
 export default {
 	data() {
 		return {
@@ -59,10 +56,6 @@ export default {
 			page: 1,
 			transition: 'scale-transition',
 		}
-	},
-	components: {
-		Logo,
-		VuetifyLogo,
 	},
 
 	methods: {},
