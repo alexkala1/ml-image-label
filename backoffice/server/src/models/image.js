@@ -66,6 +66,10 @@ const imageSchema = mongoose.Schema({
                 }],
             }
         }]
+    },
+    date: {
+        required: true,
+        type: Date
     }
 })
 

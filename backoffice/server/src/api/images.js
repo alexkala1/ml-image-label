@@ -22,7 +22,8 @@ router.post('/', async (req, res, next) => {
 		image: req.params.image,
 		imageName: req.params.imageName,
 		isVerified: false,
-		object: req.params.object
+		object: req.params.object,
+		date: Date.now()
 	})
 
 	await image.save();
