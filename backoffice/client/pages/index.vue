@@ -32,7 +32,7 @@
 				</v-skeleton-loader>
 			</v-col>
 		</v-row>
-		<v-row justify="center" align="center">
+		<v-row justify="center" align="center" v-if="loading === false">
 			<v-pagination
 				v-model="page"
 				class="my-4"
@@ -40,6 +40,10 @@
 				:length="15"
 				circle
 			></v-pagination>
+		</v-row>
+		<v-row justify="center" align="center" v-else>
+			<v-progress-circular class="my-4" indeterminate>
+			</v-progress-circular>
 		</v-row>
 	</v-container>
 </template>
@@ -67,7 +71,7 @@ export default {
 		this.$nextTick(function () {
 			window.setInterval(() => {
 				this.loading = false
-			}, 1000)
+			}, 2000)
 		})
 	},
 }
