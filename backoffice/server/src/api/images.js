@@ -20,6 +20,7 @@ router.post('/', async (req, res, next) => {
 		dataset: req.params.dataset,
 		dataset_id: req.params.dataset_id,
 		image: req.params.image,
+		imageName: req.params.imageName,
 		isVerified: false,
 		object: req.params.object
 	})

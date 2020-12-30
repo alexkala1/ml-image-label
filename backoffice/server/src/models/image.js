@@ -22,6 +22,10 @@ const imageSchema = mongoose.Schema({
         data: Buffer,
         contentType: String
     },
+    imageName: {
+        required: true,
+        type: String
+    },
     "isVerified": {
         required: true,
         type: Boolean
