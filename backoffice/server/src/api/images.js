@@ -12,14 +12,38 @@ const Image = require('../models/image')
  */
 
 // Create new image
-router.post('/', (req, res, next) => {
+router.post('/', async (req, res, next) => {
 
+	const image = new Image({
+		email: req.params.email,
+		user_id: req.params.user_id,
+		dataset: req.params.dataset,
+		dataset_id: req.params.dataset_id,
+		image: req.params.image,
+		isVerified: false
+	})
+
+	await image.save();
+
+	return res.json(image)
 })
 
 // Get all images
-router.get('/non-verified', async (req, res, next) => {
+router.get('/rejected', async (req, res, next) => {
 	try {
 		const images = await Image.find({ isVerified: false })
+
+		return res.json(images)
+	} catch (error) {
+		return res.json(error)
+	}
+})
+
+// Get all images
+router.get('/rejected/:user_id', async (req, res, next) => {
+	try {
+		const images = await Image.find({ isVerified: true, id: req.params.user_id })
+
 		return res.json(images)
 	} catch (error) {
 		return res.json(error)
@@ -30,6 +54,7 @@ router.get('/non-verified', async (req, res, next) => {
 router.get('/verified', async (req, res, next) => {
 	try {
 		const images = await Image.find({ isVerified: true })
+
 		return res.json(images)
 	} catch (error) {
 		return res.json(error)
@@ -37,28 +62,49 @@ router.get('/verified', async (req, res, next) => {
 })
 
 // Get all images
-router.get('/verified', async (req, res, next) => {
+router.get('/verified/:user_id', async (req, res, next) => {
 	try {
-		const images = await Image.find({ isVerified: true })
+		const images = await Image.find({ isVerified: true, id: req.params.user_id })
+
 		return res.json(images)
 	} catch (error) {
 		return res.json(error)
 	}
 })
 
-// Get image by id
-router.get('/:id', (req, res, next) => {
+// Get Image by id
+router.get('/:_id', async (req, res, next) => {
+	try {
+		const image = await Image.findById(req.params._id)
 
+		return res.json(image)
+	} catch (error) {
+		return res.json(error)
+	}
 })
+// Verify an image
+router.put('/:_id', async (req, res, next) => {
+	try {
+		const image = await Image.findById(req.params._id)
+		image.isVerified = true
+		
+		await image.save()
 
-// Update image by id
-router.put('/:id', (req, res, next) => {
-
+		return res.json(image)
+	} catch (error) {
+		return res.json(error)
+	}
 })
 
 // Delete image by id
-router.delete('/:id', (req, res, next) => {
+router.delete('/:_id', async (req, res, next) => {
+	try {
+		const image = await Image.findOneAndRemove(req.params._id)
 
+		return res.json(image)
+	} catch (error) {
+		return res.json(error)
+	}
 })
 
 module.exports = router;
