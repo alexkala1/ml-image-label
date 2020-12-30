@@ -7,7 +7,7 @@
 						class="font-weight-light text-center"
 						style="word-break: break-word"
 					>
-						Καλωσηρθατε στο my Infomax
+						Login to my Image-Labeling-Backoffice
 					</h2>
 				</v-card-title>
 				<v-card-text full-height>
@@ -54,7 +54,6 @@ export default {
 				password: '',
 			},
 			error: '',
-			showError: false,
 		}
 	},
 	methods: {
@@ -63,17 +62,9 @@ export default {
 				let { data } = await this.$auth.loginWith('local', {
 					data: this.login,
 				})
-				// await this.$auth.setUser({
-				// 	email: data.response.email,
-				// 	firstName: data.response.firstName,
-				// 	lastName: data.response.lastName,
-				// 	userType: data.response.userType,
-        // })
 				await this.$auth.setUserToken(data.response.token)
 				this.$router.push('/')
-				this.showError = false
 			} catch (error) {
-				this.showError = true
 				this.error = error
 			}
 		},
