@@ -20,7 +20,8 @@ router.post('/', async (req, res, next) => {
 		dataset: req.params.dataset,
 		dataset_id: req.params.dataset_id,
 		image: req.params.image,
-		isVerified: false
+		isVerified: false,
+		object: req.params.object
 	})
 
 	await image.save();
@@ -87,7 +88,7 @@ router.put('/:_id', async (req, res, next) => {
 	try {
 		const image = await Image.findById(req.params._id)
 		image.isVerified = true
-		
+
 		await image.save()
 
 		return res.json(image)
