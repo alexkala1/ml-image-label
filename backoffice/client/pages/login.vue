@@ -1,5 +1,21 @@
 <template>
 	<v-row class="align-center justify-center wrap">
+		<v-snackbar
+			v-model="snackbar"
+			top
+			right
+			:color="snackbarColor"
+			vertical
+			elevation="24"
+		>
+			{{ message }}
+
+			<template v-slot:action="{ attrs }">
+				<v-btn text v-bind="attrs" @click="snackbar = false">
+					Close
+				</v-btn>
+			</template>
+		</v-snackbar>
 		<v-col cols="12" lg="5" md="6" class="pr-3 pl-6">
 			<v-card rounded raised outlined>
 				<v-card-title class="justify-center py-5 my-5">
@@ -53,19 +69,33 @@ export default {
 				email: '',
 				password: '',
 			},
-			error: '',
+			snackbar: false,
+			snackbarColor: '',
+			message: '',
 		}
 	},
 	methods: {
 		async submit() {
+			let { data } = await this.$auth.loginWith('local', {
+				data: this.login,
+			})
+
 			try {
-				let { data } = await this.$auth.loginWith('local', {
-					data: this.login,
-				})
 				await this.$auth.setUserToken(data.response.token)
-				this.$router.push('/')
+
+				this.snackbar = true
+				this.snackbarColor = 'green'
+        this.message = 'Login Successful'
+
+				this.$nextTick(function () {
+					window.setInterval(() => {
+						this.$router.push('/')
+					}, 2000)
+				})
 			} catch (error) {
-				this.error = error
+				this.message = data.error
+				this.snackbar = true
+				this.snackbarColor = 'red'
 			}
 		},
 	},

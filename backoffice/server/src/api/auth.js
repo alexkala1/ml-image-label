@@ -47,26 +47,29 @@ router.post('/login', async (req, res) => {
 	})
 
 	// Check credentials
-	if (bcrypt.compareSync(req.body.password, user.password) && user !== undefined) {
-		// Sign user's email with jwt token
-		const token = jwt.sign({ email: req.body.email }, process.env.ACCESS_TOKEN, { expiresIn: '15m' })
+	try {
+		if (bcrypt.compareSync(req.body.password, user.password) && user !== undefined) {
+			// Sign user's email with jwt token
+			const token = jwt.sign({ email: req.body.email }, process.env.ACCESS_TOKEN, { expiresIn: '15m' })
 
-		// Create session user
-		const response = {
-			firstName: user.firstName,
-			lastName: user.lastName,
-			email: user.email,
-			id: user._id,
-			token,
+			// Create session user
+			const response = {
+				firstName: user.firstName,
+				lastName: user.lastName,
+				email: user.email,
+				id: user._id,
+				token,
+			}
+
+			return res.json({ response })
 		}
-
-		return res.json({ response })
+		else if (!bcrypt.compareSync(req.body.password, user.password))
+			throw new Error('Λάθος κωδικός')
+		else if (user === undefined)
+			throw new Error('Δεν υφίσταται χρήστης με αυτό το email')
+	} catch (error) {
+		return res.json({"error": "Wrong Credentials"})
 	}
-	if (!bcrypt.compareSync(req.body.password, user.password))
-		throw new Error('Λάθος κωδικός')
-
-	if (user === undefined)
-		throw new Error('Δεν υφίσταται χρήστης με αυτό το email')
 })
 
 /**
