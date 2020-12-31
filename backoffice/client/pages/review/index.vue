@@ -41,7 +41,7 @@
 							<div>Whitsunday Island, Whitsunday Islands</div>
 						</v-card-text>
 						<v-card-actions>
-							<v-btn color="orange" text> Share </v-btn>
+							<v-btn color="orange" :to="{ path: '/review/' + i}" text> Share </v-btn>
 							<v-btn color="orange" text> Explore </v-btn>
 						</v-card-actions>
 					</v-card>
