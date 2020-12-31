@@ -11,8 +11,24 @@
 						<v-img
 							class="white--text align-end"
 							height="200px"
-							src="https://cdn.vuetifyjs.com/images/cards/docks.jpg"
+							:src="`https://picsum.photos/500/300?image=${
+								i * 5 + 10
+							}`"
+							:lazy-src="`https://picsum.photos/10/6?image=${
+								i * 5 + 10
+							}`"
 						>
+							<template v-slot:placeholder>
+								<v-row
+									class="fill-height ma-0"
+									align="center"
+									justify="center"
+								>
+									<v-progress-circular
+										indeterminate
+									></v-progress-circular>
+								</v-row>
+							</template>
 							<v-card-title
 								>Top 10 Australian beaches</v-card-title
 							>
@@ -43,7 +59,7 @@
 		</v-row>
 		<v-row justify="center" align="center" v-else>
 			<v-progress-circular class="my-4" indeterminate>
-      </v-progress-circular>
+			</v-progress-circular>
 		</v-row>
 	</v-container>
 </template>
