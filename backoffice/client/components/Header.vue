@@ -20,6 +20,10 @@ export default {
           path:'/',
           name: 'Home'
         },
+        {
+          path:'/review',
+          name: 'Review'
+        },
 				{
 					path: '/approved',
 					name: 'Approved Images',
