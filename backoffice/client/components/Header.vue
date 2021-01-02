@@ -35,7 +35,11 @@ export default {
 				{
 					path: '/allImages',
 					name: 'All Images',
-				},
+        },
+        {
+          path: '/history',
+          name: 'History'
+        }
 			],
 		}
 	},

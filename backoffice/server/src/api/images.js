@@ -31,6 +31,17 @@ router.post('/', async (req, res, next) => {
 	return res.json(image)
 })
 
+// Fetch user history
+router.get('/verified/:admin_id', async (req, res, next) => {
+	try {
+		const images = await Image.find({ verifiedBy: req.params.admin_id })
+
+		return res.json(images)
+	} catch (error) {
+		return res.json(error)
+	}
+})
+
 // Get all rejected images
 router.get('/rejected', async (req, res, next) => {
 	try {
