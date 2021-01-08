@@ -15,14 +15,14 @@ const Image = require('../models/image')
 router.post('/', async (req, res, next) => {
 
 	const image = new Image({
-		email: req.params.email,
-		user_id: req.params.user_id,
-		dataset: req.params.dataset,
-		dataset_id: req.params.dataset_id,
-		image: req.params.image,
-		imageName: req.params.imageName,
+		email: req.body.email,
+		user_id: req.body.user_id,
+		dataset: req.body.dataset,
+		dataset_id: req.body.dataset_id,
+		image: req.body.image,
+		imageName: req.body.imageName,
 		isVerified: false,
-		object: req.params.object,
+		object: req.body.object,
 		date: Date.now()
 	})
 
