@@ -1,4 +1,6 @@
 const express = require('express')
+const multer = require('multer')
+const upload = multer({dest: 'uploads/'})
 
 const router = express.Router()
 
@@ -12,8 +14,10 @@ const Image = require('../models/image')
  */
 
 // Create new image
-router.post('/', async (req, res, next) => {
+router.post('/',upload.single('image') , async (req, res, next) => {
 
+	console.log(req.file)
+	console.log(req.body)
 	const image = new Image({
 		email: req.body.email,
 		user_id: req.body.user_id,
@@ -22,13 +26,14 @@ router.post('/', async (req, res, next) => {
 		image: req.body.image,
 		imageName: req.body.imageName,
 		isVerified: false,
+		isHumanChecked: false,
 		object: req.body.object,
 		date: Date.now()
-	})
+	});
 
 	await image.save();
 
-	return res.json(image)
+	return res.json(image);
 })
 
 // Get all rejected images
@@ -88,14 +93,14 @@ router.get('/:_id', async (req, res, next) => {
 // Verify an image
 router.put('/:_id', async (req, res, next) => {
 	try {
-		const image = await Image.findById(req.params._id)
-		image.isVerified = true
+		const image = await Image.findById(req.params._id);
+		image.isVerified = true;
 
-		await image.save()
+		await image.save();
 
-		return res.json(image)
+		return res.json(image);
 	} catch (error) {
-		return res.json(error)
+		return res.json(error);
 	}
 })
 
