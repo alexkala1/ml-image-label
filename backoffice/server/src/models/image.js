@@ -30,6 +30,10 @@ const imageSchema = mongoose.Schema({
         required: true,
         type: Boolean
     },
+    "isHumanChecked": {
+        required: true,
+        type: Boolean
+    },
     /**
      * We need to have the user search for the
      * appropriate label and if it does not exist 
@@ -42,8 +46,8 @@ const imageSchema = mongoose.Schema({
         required: true,
         type: [{
             label: {
-                type: Schema.Types.ObjectId,
-                ref: 'Label'
+                required: true,
+                type: String
             },
             bbox: {
                 type: [{
