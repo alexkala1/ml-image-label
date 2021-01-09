@@ -1,7 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:http/http.dart' as http;
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 
 void main() {
@@ -48,25 +49,37 @@ class _MyHomePageState extends State<MyHomePage> {
       return;
     }
 
-    String fileName = tmpFile.path
-        .split('/')
-        .last;
+    String fileName = tmpFile.path.split('/').last;
 
     upload(fileName);
   }
 
   upload(String fileName) {
     http.post('http://10.0.2.2:3001/api/v1/images',
-        headers: {"Content-Type": "application/json"},
-        body: jsonEncode({
-          "image": base64Image,
-          "name": fileName,
-          "email": "asd@asd.asd",
-          "user_id": "1",
-          "dataset": "asdasdasd",
-          "dataset_id": "1",
-          "object": "lounge"
-        })).then((result) {
+            headers: {"Content-Type": "application/json"},
+            body: jsonEncode({
+              "image": base64Image,
+              "imageName": fileName,
+              "email": "asd@asd.asd",
+              "isHumanChecked": false,
+              "user_id": "1",
+              "dataset": "asdasdasd",
+              "dataset_id": "1",
+              "object": [
+                {
+                  "label": "lounge",
+                  "bbox": [
+                    {
+                      "x": 100,
+                      "y": 100,
+                      "width": 100,
+                      "height": 100,
+                    }
+                  ]
+                }
+              ]
+            }))
+        .then((result) {
       print(result.body);
       setStatus(result.statusCode == 200 ? result.body : error);
     }).catchError((error) {
