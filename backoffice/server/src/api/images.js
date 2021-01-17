@@ -1,6 +1,6 @@
 const express = require('express')
 const multer = require('multer')
-const upload = multer({dest: 'uploads/'})
+const upload = multer({ dest: 'uploads/' })
 
 const router = express.Router()
 
@@ -14,7 +14,7 @@ const Image = require('../models/image')
  */
 
 // Create new image
-router.post('/',upload.single('image') , async (req, res, next) => {
+router.post('/', upload.single('image'), async (req, res, next) => {
 
 	console.log(req.file)
 	console.log(req.body)
@@ -36,10 +36,10 @@ router.post('/',upload.single('image') , async (req, res, next) => {
 	return res.json(image);
 })
 
-// Fetch user history
-router.get('/verified/:user_id', async (req, res, next) => {
+// Get all images
+router.get('/allImages', async (req, res, next) => {
 	try {
-		const images = await Image.find({ verifiedBy: req.params.user_id, isHumanChecked: true })
+		const images = await Image.find()
 
 		return res.json(images)
 	} catch (error) {
@@ -51,17 +51,6 @@ router.get('/verified/:user_id', async (req, res, next) => {
 router.get('/rejected', async (req, res, next) => {
 	try {
 		const images = await Image.find({ isVerified: false, isHumanChecked: true })
-
-		return res.json(images)
-	} catch (error) {
-		return res.json(error)
-	}
-})
-
-// Get all rejected images from a user
-router.get('/rejected/:user_id', async (req, res, next) => {
-	try {
-		const images = await Image.find({ isVerified: true, id: req.params.user_id, isHumanChecked: true })
 
 		return res.json(images)
 	} catch (error) {
@@ -84,6 +73,17 @@ router.get('/verified', async (req, res, next) => {
 router.get('/verified/:user_id', async (req, res, next) => {
 	try {
 		const images = await Image.find({ isVerified: true, id: req.params.user_id, isHumanChecked: true })
+
+		return res.json(images)
+	} catch (error) {
+		return res.json(error)
+	}
+})
+
+// Fetch History
+router.get('/history', async (req, res) => {
+	try {
+		const images = await Image.find({ isHumanChecked: true })
 
 		return res.json(images)
 	} catch (error) {
@@ -122,6 +122,8 @@ router.put('/verify/:_id', async (req, res, next) => {
 
 		await image.save();
 
+		console.log(image)
+
 		return res.json(image);
 	} catch (error) {
 		return res.json(error);
@@ -137,6 +139,8 @@ router.put('/reject/:_id', async (req, res, next) => {
 		image.isVerified = false;
 
 		await image.save();
+
+		console.log(image)
 
 		return res.json(image);
 	} catch (error) {
