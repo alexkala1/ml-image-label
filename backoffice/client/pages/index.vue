@@ -41,12 +41,11 @@
 							>ID: {{ image._id }}</v-card-subtitle
 						>
 						<v-card-text class="text--primary">
-							<div>Whitehaven Beach</div>
-							<div>Whitsunday Island, Whitsunday Islands</div>
+							<div>Created at: {{ image.date }}</div>
+							<div>Uploaded by: {{ image.user_id }}</div>
 						</v-card-text>
 						<v-card-actions>
-							<v-btn color="orange" text> Share </v-btn>
-							<v-btn color="orange" text> Explore </v-btn>
+							<v-btn color="orange" text :to="'/review/' + image.id"> Review </v-btn>
 						</v-card-actions>
 					</v-card>
 				</v-skeleton-loader>
@@ -85,7 +84,7 @@ export default {
 	methods: {
 		async getAllImages() {
 			const { data } = await this.$axios.get(
-				`http://localhost:3001/api/v1/images/rejected`
+				`http://localhost:3001/api/v1/images/nonReviewed`
 			)
 
 			this.allImages = data
@@ -96,7 +95,6 @@ export default {
 
 		changePage(page) {
 			this.images = this.allImages.filter((image, i) => {
-				console.log(image._id)
 				return i >= ((page - 1) * 10) && i < (page * 10)
 			})
 		}
