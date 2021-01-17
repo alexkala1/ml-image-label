@@ -16,14 +16,10 @@ export default {
 	data() {
 		return {
 			routes: [
-        {
-          path:'/',
-          name: 'Home'
-        },
-        {
-          path:'/review',
-          name: 'Review'
-        },
+				{
+					path: '/',
+					name: 'Home',
+				},
 				{
 					path: '/approved',
 					name: 'Approved Images',
@@ -35,11 +31,11 @@ export default {
 				{
 					path: '/allImages',
 					name: 'All Images',
-        },
-        {
-          path: '/history',
-          name: 'History'
-        }
+				},
+				{
+					path: '/history',
+					name: 'History',
+				},
 			],
 		}
 	},
