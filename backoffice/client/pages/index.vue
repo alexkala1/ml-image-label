@@ -45,7 +45,7 @@
 							<div>Uploaded by: {{ image.user_id }}</div>
 						</v-card-text>
 						<v-card-actions>
-							<v-btn color="orange" text :to="'/review/' + image.id"> Review </v-btn>
+							<v-btn color="orange" text :to="'/review/' + image._id"> Review </v-btn>
 						</v-card-actions>
 					</v-card>
 				</v-skeleton-loader>
