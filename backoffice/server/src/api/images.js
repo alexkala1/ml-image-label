@@ -1,4 +1,6 @@
 const express = require('express')
+const multer = require('multer')
+const upload = multer({dest: 'uploads/'})
 
 const router = express.Router()
 
@@ -12,23 +14,26 @@ const Image = require('../models/image')
  */
 
 // Create new image
-router.post('/', async (req, res, next) => {
+router.post('/',upload.single('image') , async (req, res, next) => {
 
+	console.log(req.file)
+	console.log(req.body)
 	const image = new Image({
-		email: req.params.email,
-		user_id: req.params.user_id,
-		dataset: req.params.dataset,
-		dataset_id: req.params.dataset_id,
-		image: req.params.image,
-		imageName: req.params.imageName,
+		email: req.body.email,
+		user_id: req.body.user_id,
+		dataset: req.body.dataset,
+		dataset_id: req.body.dataset_id,
+		image: req.body.image,
+		imageName: req.body.imageName,
 		isVerified: false,
-		object: req.params.object,
+		isHumanChecked: false,
+		object: req.body.object,
 		date: Date.now()
-	})
+	});
 
 	await image.save();
 
-	return res.json(image)
+	return res.json(image);
 })
 
 // Fetch user history
@@ -99,14 +104,14 @@ router.get('/:_id', async (req, res, next) => {
 // Verify an image
 router.put('/:_id', async (req, res, next) => {
 	try {
-		const image = await Image.findById(req.params._id)
-		image.isVerified = true
+		const image = await Image.findById(req.params._id);
+		image.isVerified = true;
 
-		await image.save()
+		await image.save();
 
-		return res.json(image)
+		return res.json(image);
 	} catch (error) {
-		return res.json(error)
+		return res.json(error);
 	}
 })
 
