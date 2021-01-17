@@ -31,21 +31,37 @@ export default {
 		return {
 			search: '',
 			loading: true,
-			headers: [],
+			headers: [
+				{ text: 'dataset', value: 'dataset' },
+				{ text: 'dataset_id', value: 'dataset_id' },
+				{ text: 'date', value: 'date' },
+				{ text: 'email', value: 'email' },
+				{ text: 'imageName', value: 'imageName' },
+				{ text: 'isHumanChecked', value: 'isHumanChecked' },
+				{ text: 'isVerified', value: 'isVerified' },
+				{ text: 'object', value: 'object' },
+				{ text: 'reviewedAt', value: 'reviewedAt' },
+				{ text: 'user_id', value: 'user_id' },
+				{ text: '__v', value: '__v' },
+				{ text: '_id', value: '_id' },
+			],
 			approvedImages: [],
 		}
 	},
 
 	methods: {
 		async getApprovedImages() {
-			const response = await this.$axios.get('http://localhost:3001/api/v1/images/approved')
+			const response = await this.$axios.get(
+				'http://localhost:3001/api/v1/images/verified'
+			)
 			console.log(response)
-			this.loading = false;
-		}
+			this.approvedImages = response.data
+			this.loading = false
+		},
 	},
 
 	mounted() {
 		this.getApprovedImages()
-	}
+	},
 }
 </script>
