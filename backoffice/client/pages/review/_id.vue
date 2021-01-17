@@ -124,8 +124,8 @@ export default {
 		}
 	},
 	methods: {
-		properDate() {
-			return moment().format('MMMM Do YYYY, h:mm:ss a')
+		properDate(date) {
+			return moment(date).format('MMMM Do YYYY, h:mm:ss a')
 		},
 
 		async getImage() {
@@ -134,7 +134,6 @@ export default {
 					`http://localhost:3001/api/v1/images/${this.$route.params.id}`
 				)
 
-				console.log(data)
 				this.image = data
 				delete this.image.__v
 				this.loading = false
