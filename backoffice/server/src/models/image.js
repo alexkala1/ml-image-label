@@ -74,7 +74,15 @@ const imageSchema = mongoose.Schema({
     date: {
         required: true,
         type: Date
-    }
+    },
+    verifiedBy: {
+        required: false,
+        type: String
+	},
+	reviewedAt: {
+		required: false,
+		type: Date
+	}
 })
 
 module.exports = mongoose.model('Image', imageSchema)

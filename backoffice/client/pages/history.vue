@@ -3,7 +3,7 @@
 		<v-col cols="12" sm="12" md="10">
 			<v-card>
 				<v-card-title>
-					All-time Approved Images
+					Nutrition
 					<v-spacer></v-spacer>
 					<v-text-field
 						v-model="search"
@@ -15,7 +15,7 @@
 				</v-card-title>
 				<v-data-table
 					:headers="headers"
-					:items="approvedImages"
+					:items="history"
 					:search="search"
 					:loading="loading"
 					loading-text="Loading... Please wait"
@@ -45,23 +45,27 @@ export default {
 				{ text: '__v', value: '__v' },
 				{ text: '_id', value: '_id' },
 			],
-			approvedImages: [],
+			history: [],
 		}
 	},
 
 	methods: {
-		async getApprovedImages() {
-			const response = await this.$axios.get(
-				'http://localhost:3001/api/v1/images/verified'
-			)
-			console.log(response)
-			this.approvedImages = response.data
-			this.loading = false
+		async fetchHistory() {
+			try {
+				const { data } = await this.$axios.get(
+					'http://localhost:3001/api/v1/images/history'
+				)
+				this.history = data
+				this.loading = false
+			} catch (error) {
+				alert(error)
+				this.loading = false
+			}
 		},
 	},
 
 	mounted() {
-		this.getApprovedImages()
+		this.fetchHistory()
 	},
 }
 </script>

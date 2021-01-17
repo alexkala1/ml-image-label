@@ -85,13 +85,9 @@ export default {
 
 				this.snackbar = true
 				this.snackbarColor = 'green'
-        this.message = 'Login Successful'
+				this.message = 'Login Successful'
 
-				this.$nextTick(function () {
-					window.setInterval(() => {
-						this.$router.push('/')
-					}, 2000)
-				})
+				location.reload()
 			} catch (error) {
 				this.message = data.error
 				this.snackbar = true

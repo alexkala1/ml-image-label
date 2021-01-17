@@ -6,8 +6,7 @@
 				{{ route.name }}
 			</v-tab>
 		</v-tabs>
-		<v-spacer></v-spacer>
-		<h2 flat @click="logout()">Log Out</h2>
+		<v-btn text @click="logout()">Log Out</v-btn>
 	</v-app-bar>
 </template>
 
@@ -16,14 +15,10 @@ export default {
 	data() {
 		return {
 			routes: [
-        {
-          path:'/',
-          name: 'Home'
-        },
-        {
-          path:'/review',
-          name: 'Review'
-        },
+				{
+					path: '/',
+					name: 'Home',
+				},
 				{
 					path: '/approved',
 					name: 'Approved Images',
@@ -36,6 +31,10 @@ export default {
 					path: '/allImages',
 					name: 'All Images',
 				},
+				{
+					path: '/history',
+					name: 'History',
+				},
 			],
 		}
 	},
@@ -44,9 +43,11 @@ export default {
 			await this.$auth.logout()
 			this.$router.push('/login')
 		},
-	},
-	mounted() {
-		console.log(this.$auth)
-	},
+	}
 }
 </script>
+<style scoped>
+.v-toolbar__title {
+	overflow: visible;
+}
+</style>

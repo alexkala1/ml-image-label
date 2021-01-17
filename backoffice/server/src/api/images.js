@@ -1,6 +1,6 @@
 const express = require('express')
 const multer = require('multer')
-const upload = multer({dest: 'uploads/'})
+const upload = multer({ dest: 'uploads/' })
 
 const router = express.Router()
 
@@ -14,7 +14,7 @@ const Image = require('../models/image')
  */
 
 // Create new image
-router.post('/',upload.single('image') , async (req, res, next) => {
+router.post('/', upload.single('image'), async (req, res, next) => {
 
 	console.log(req.file)
 	console.log(req.body)
@@ -36,10 +36,10 @@ router.post('/',upload.single('image') , async (req, res, next) => {
 	return res.json(image);
 })
 
-// Get all rejected images
-router.get('/rejected', async (req, res, next) => {
+// Get all images
+router.get('/allImages', async (req, res, next) => {
 	try {
-		const images = await Image.find({ isVerified: false })
+		const images = await Image.find()
 
 		return res.json(images)
 	} catch (error) {
@@ -47,10 +47,10 @@ router.get('/rejected', async (req, res, next) => {
 	}
 })
 
-// Get all rejected images from a user
-router.get('/rejected/:user_id', async (req, res, next) => {
+// Get all rejected images
+router.get('/rejected', async (req, res, next) => {
 	try {
-		const images = await Image.find({ isVerified: true, id: req.params.user_id })
+		const images = await Image.find({ isVerified: false, isHumanChecked: true })
 
 		return res.json(images)
 	} catch (error) {
@@ -61,7 +61,7 @@ router.get('/rejected/:user_id', async (req, res, next) => {
 // Get all verified images
 router.get('/verified', async (req, res, next) => {
 	try {
-		const images = await Image.find({ isVerified: true })
+		const images = await Image.find({ isVerified: true, isHumanChecked: true })
 
 		return res.json(images)
 	} catch (error) {
@@ -72,7 +72,29 @@ router.get('/verified', async (req, res, next) => {
 // Get all verified images from a user
 router.get('/verified/:user_id', async (req, res, next) => {
 	try {
-		const images = await Image.find({ isVerified: true, id: req.params.user_id })
+		const images = await Image.find({ isVerified: true, id: req.params.user_id, isHumanChecked: true })
+
+		return res.json(images)
+	} catch (error) {
+		return res.json(error)
+	}
+})
+
+// Fetch History
+router.get('/history', async (req, res) => {
+	try {
+		const images = await Image.find({ isHumanChecked: true })
+
+		return res.json(images)
+	} catch (error) {
+		return res.json(error)
+	}
+})
+
+// Get non reviewed images
+router.get('/nonReviewed', async (req, res) => {
+	try {
+		const images = await Image.find({ isHumanChecked: false })
 
 		return res.json(images)
 	} catch (error) {
@@ -91,12 +113,34 @@ router.get('/:_id', async (req, res, next) => {
 	}
 })
 // Verify an image
-router.put('/:_id', async (req, res, next) => {
+router.put('/verify/:_id', async (req, res, next) => {
 	try {
 		const image = await Image.findById(req.params._id);
+		image.isHumanChecked = true;
+		image.reviewedAt = Date.now();
 		image.isVerified = true;
 
 		await image.save();
+
+		console.log(image)
+
+		return res.json(image);
+	} catch (error) {
+		return res.json(error);
+	}
+})
+
+// Reject an image
+router.put('/reject/:_id', async (req, res, next) => {
+	try {
+		const image = await Image.findById(req.params._id);
+		image.isHumanChecked = true;
+		image.reviewedAt = Date.now();
+		image.isVerified = false;
+
+		await image.save();
+
+		console.log(image)
 
 		return res.json(image);
 	} catch (error) {

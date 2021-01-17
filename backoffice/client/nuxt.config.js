@@ -85,14 +85,15 @@ export default {
       local: {
         endpoints: {
           login: { url: '/auth/login', method: 'post', propertyName: 'data.token', },
-          user: {url: '/auth/fetchUser', method: 'get', propertyName: 'user'},
+          user: { url: '/auth/fetchUser', method: 'get', propertyName: 'user' },
           logout: false,
         },
         tokenRequired: true,
         tokenType: 'bearer',
         tokenName: 'Authorization',
         globalToken: true,
-        autoFetchUser: false
+        autoFetchUser: false,
+        autoLogout: true
       },
     },
   },
