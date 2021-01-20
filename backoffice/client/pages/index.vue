@@ -17,12 +17,7 @@
 						<v-img
 							class="white--text align-end"
 							height="200px"
-							:src="`https://picsum.photos/500/300?image=${
-								i * 5 + 10
-							}`"
-							:lazy-src="`https://picsum.photos/10/6?image=${
-								i * 5 + 10
-							}`"
+							:src="`data:image/jpeg;base64,${image.image}`"
 						>
 							<template v-slot:placeholder>
 								<v-row

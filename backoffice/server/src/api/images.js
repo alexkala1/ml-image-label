@@ -1,10 +1,15 @@
 const express = require('express')
 const multer = require('multer')
-const upload = multer({ dest: 'uploads/' })
-
 const router = express.Router()
 
 const Image = require('../models/image')
+
+const upload = multer({
+	dest: './ uploads /',
+	rename: function (fieldname, filename) {
+		return filename;
+	},
+})
 
 /**
  * Basic CRUD functionality for image
@@ -16,14 +21,14 @@ const Image = require('../models/image')
 // Create new image
 router.post('/', upload.single('image'), async (req, res, next) => {
 
-	console.log(req.file)
-	console.log(req.body)
+	console.log(req.body.image)
+
 	const image = new Image({
 		email: req.body.email,
 		user_id: req.body.user_id,
+		image: req.body.image,
 		dataset: req.body.dataset,
 		dataset_id: req.body.dataset_id,
-		image: req.body.image,
 		imageName: req.body.imageName,
 		isVerified: false,
 		isHumanChecked: false,

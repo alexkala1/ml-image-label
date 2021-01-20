@@ -42,7 +42,6 @@ export default {
 				{ text: 'object', value: 'object' },
 				{ text: 'reviewedAt', value: 'reviewedAt' },
 				{ text: 'user_id', value: 'user_id' },
-				{ text: '__v', value: '__v' },
 				{ text: '_id', value: '_id' },
 			],
 			approvedImages: [],

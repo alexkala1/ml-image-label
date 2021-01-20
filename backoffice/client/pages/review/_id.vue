@@ -20,24 +20,71 @@
 		<v-row align="center" justify="center">
 			<v-col cols="3">
 				<v-card height="700">
-					<v-card-title class="subheading font-weight-bold"
-						>tost.jpeg</v-card-title
-					>
+					<v-card-title class="subheading font-weight-bold">
+						{{ image.imageName }}
+					</v-card-title>
 
 					<v-divider></v-divider>
 
 					<v-list dense>
-						<v-list-item
-							v-for="(value, name, index) in image"
-							:key="index"
-						>
-							<v-list-item-content
-								>{{ headers[index] }}:</v-list-item-content
+						<v-list-item>
+							<v-list-item-content> ID:</v-list-item-content>
+							<v-list-item-content class="align-end">
+								{{ image._id }}
+							</v-list-item-content>
+						</v-list-item>
+						<v-list-item>
+							<v-list-item-content> E-mail:</v-list-item-content>
+							<v-list-item-content class="align-end">
+								{{ image.email }}
+							</v-list-item-content>
+						</v-list-item>
+						<v-list-item>
+							<v-list-item-content> User ID:</v-list-item-content>
+							<v-list-item-content class="align-end">
+								{{ image.user_id }}
+							</v-list-item-content>
+						</v-list-item>
+						<v-list-item>
+							<v-list-item-content> Dataset:</v-list-item-content>
+							<v-list-item-content class="align-end">
+								{{ image.dataset }}
+							</v-list-item-content>
+						</v-list-item>
+						<v-list-item>
+							<v-list-item-content>
+								Dataset ID:</v-list-item-content
 							>
 							<v-list-item-content class="align-end">
-								{{
-									name === 'date' ? properDate(value) : value
-								}}
+								{{ image.dataset_id }}
+							</v-list-item-content>
+						</v-list-item>
+						<v-list-item>
+							<v-list-item-content>
+								Is Verified:</v-list-item-content
+							>
+							<v-list-item-content class="align-end">
+								{{ image.isVerified }}
+							</v-list-item-content>
+						</v-list-item>
+						<v-list-item>
+							<v-list-item-content>
+								Is Reviewed:</v-list-item-content
+							>
+							<v-list-item-content class="align-end">
+								{{ image.isHumanChecked }}
+							</v-list-item-content>
+						</v-list-item>
+						<v-list-item>
+							<v-list-item-content> Object:</v-list-item-content>
+							<v-list-item-content class="align-end">
+								{{ image.object }}
+							</v-list-item-content>
+						</v-list-item>
+						<v-list-item>
+							<v-list-item-content> Date:</v-list-item-content>
+							<v-list-item-content class="align-end">
+								{{ properDate(image.date) }}
 							</v-list-item-content>
 						</v-list-item>
 					</v-list>
@@ -47,8 +94,7 @@
 				<v-img
 					max-height="700"
 					contain
-					:src="`https://picsum.photos/500/300?image=${3}`"
-					:lazy-src="`https://picsum.photos/10/6?image=${3}`"
+					:src="`data:image/jpeg;base64,${image.image}`"
 					class="grey lighten-2"
 				>
 					<template v-slot:placeholder>
@@ -109,18 +155,6 @@ export default {
 			message: '',
 			image: '',
 			loading: true,
-			headers: [
-				'ID',
-				'E-mail',
-				'User ID',
-				'Dataset',
-				'Dataset ID',
-				'Image Name',
-				'Is Verified',
-				'Is Reviewed',
-				'Object',
-				'Date',
-			],
 		}
 	},
 	methods: {
