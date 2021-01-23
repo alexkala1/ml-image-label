@@ -38,7 +38,7 @@ and now you can login with the account you just created.
 This now depends on how you want to interact either from your mobile or from a virtual device in android studio. We need to first open an editor of your choice
 and let the app build before we proceed. The tests were made in the latest version of android in Pixel 4 Xl device. So if all the tools are installed you just connect
 your device and build the main.dart to play. Else you can export and install your app manually with
-  * flutter build apk --release  
+  * **flutter build apk --release**  
   or for IOS
-  * flutter build ios --release  
+  * **flutter build ios --release**  
 from the command line and then send it to your phone and install the application there.
