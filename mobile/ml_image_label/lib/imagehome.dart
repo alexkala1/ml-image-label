@@ -1,5 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -29,6 +31,7 @@ class _MyHomePageState extends State<MyHomePage> {
   String base64Image;
   File tmpFile;
   String error = 'Error';
+  String user = "";
 
   chooseImage() {
     setState(() {
@@ -37,10 +40,22 @@ class _MyHomePageState extends State<MyHomePage> {
     setStatus('');
   }
 
+  @override
+  void initState() {
+    fetchUser();
+  }
+
+
   setStatus(String message) {
     setState(() {
       status = message;
     });
+  }
+
+  fetchUser() async {
+    SharedPreferences store = await SharedPreferences.getInstance();
+    user = "Welcome back " + store.getString('firstName') + " " + store.getString('lastName');
+    return;
   }
 
   uploadImg() {
@@ -50,35 +65,37 @@ class _MyHomePageState extends State<MyHomePage> {
     }
 
     String fileName = tmpFile.path.split('/').last;
-
+    fetchUser();
     upload(fileName);
   }
 
-  upload(String fileName) {
-    http.post('http://10.0.2.2:3001/api/v1/images',
-        headers: {"Content-Type": "application/json"},
-        body: jsonEncode({
-          "image": base64Image,
-          "imageName": fileName,
-          "email": "asd@asd.asd",
-          "isHumanChecked": false,
-          "user_id": "1",
-          "dataset": "asdasdasd",
-          "dataset_id": "1",
-          "object": [
-            {
-              "label": "lounge",
-              "bbox": [
+  upload(String fileName) async {
+    SharedPreferences store = await SharedPreferences.getInstance();
+
+    await http.post('http://10.0.2.2:3001/api/v1/images',
+            headers: {"Content-Type": "application/json"},
+            body: jsonEncode({
+              "image": base64Image,
+              "imageName": fileName,
+              "email": store.getString('email'),
+              "isHumanChecked": false,
+              "user_id": store.getString('id'),
+              "dataset": "asdasdasd",
+              "dataset_id": "1",
+              "object": [
                 {
-                  "x": 100,
-                  "y": 100,
-                  "width": 100,
-                  "height": 100,
+                  "label": "lounge",
+                  "bbox": [
+                    {
+                      "x": 100,
+                      "y": 100,
+                      "width": 100,
+                      "height": 100,
+                    }
+                  ]
                 }
               ]
-            }
-          ]
-        }))
+            }))
         .then((result) {
       print(result.body);
       setStatus(result.statusCode == 200 ? result.body : error);
@@ -95,8 +112,19 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
+            Container(
+                alignment: Alignment.center,
+                padding: EdgeInsets.fromLTRB(10, 25, 10, 25),
+                child: Text(
+                  user,
+                  style: TextStyle(
+                    color: Colors.blue,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 30,
+                  ),
+                )),
             FutureBuilder<File>(
               future: file,
               builder: (BuildContext context, AsyncSnapshot<File> snapshot) {
@@ -104,6 +132,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     null != snapshot.data) {
                   tmpFile = snapshot.data;
                   base64Image = base64Encode(snapshot.data.readAsBytesSync());
+
                   return Container(
                     margin: EdgeInsets.all(15),
                     child: Material(
