@@ -68,7 +68,7 @@ router.post('/login', async (req, res) => {
 		else if (user === undefined)
 			throw new Error('Δεν υφίσταται χρήστης με αυτό το email')
 	} catch (error) {
-		return res.json({"error": "Wrong Credentials"})
+		return res.status(403).json({"error": "Wrong Credentials"})
 	}
 })
 
