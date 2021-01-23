@@ -20,7 +20,7 @@ We need to go first in the backoffice folder with a terminal and then in the ser
 Then we run the commands:
   * **npm i**
   * **cp .env.sample .env**
-  * **npm run dev**
+  * **npm run dev**  
   
 And now our API is up and running at the port that is specified to the .env file we created. Feel free to edit
 the file according to your needs. The API is served in the port 3001 specified in the .env due to our backoffice client
@@ -40,5 +40,5 @@ and let the app build before we proceed. The tests were made in the latest versi
 your device and build the main.dart to play. Else you can export and install your app manually with
   * flutter build apk --release  
   or for IOS
-  * flutter build ios --release
+  * flutter build ios --release  
 from the command line and then send it to your phone and install the application there.
