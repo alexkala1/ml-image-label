@@ -36,11 +36,17 @@
 							>ID: {{ image._id }}</v-card-subtitle
 						>
 						<v-card-text class="text--primary">
-							<div>Created at: {{ image.date }}</div>
+							<div>Created at: {{ properDate(image.date) }}</div>
 							<div>Uploaded by: {{ image.user_id }}</div>
 						</v-card-text>
 						<v-card-actions>
-							<v-btn color="orange" text :to="'/review/' + image._id"> Review </v-btn>
+							<v-btn
+								color="orange"
+								text
+								:to="'/review/' + image._id"
+							>
+								Review
+							</v-btn>
 						</v-card-actions>
 					</v-card>
 				</v-skeleton-loader>
@@ -64,6 +70,8 @@
 </template>
 
 <script>
+import moment from "moment";
+
 export default {
 	data() {
 		return {
@@ -72,7 +80,7 @@ export default {
 			transition: 'scale-transition',
 			allImages: [],
 			images: [],
-			paginationLength: ''
+			paginationLength: '',
 		}
 	},
 
@@ -90,9 +98,13 @@ export default {
 
 		changePage(page) {
 			this.images = this.allImages.filter((image, i) => {
-				return i >= ((page - 1) * 10) && i < (page * 10)
+				return i >= (page - 1) * 10 && i < page * 10
 			})
-		}
+		},
+
+		properDate(date) {
+			return moment(date).format('MMMM Do YYYY, h:mm:ss a')
+		},
 	},
 
 	mounted() {
