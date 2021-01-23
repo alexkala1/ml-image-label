@@ -3,7 +3,7 @@
 		<v-col cols="12" sm="12" md="10">
 			<v-card>
 				<v-card-title>
-					Nutrition
+					History
 					<v-spacer></v-spacer>
 					<v-text-field
 						v-model="search"

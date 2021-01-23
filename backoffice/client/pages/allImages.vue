@@ -1,11 +1,27 @@
 <template>
 	<v-container>
 		<v-row justify="center" align="center">
+			<v-col cols="12" md="6" >
+				<v-text-field
+					outlined
+					v-model="search"
+					append-icon="mdi-magnify"
+					placeholder="Search"
+					@input="searchImages"
+				>
+				</v-text-field>
+			</v-col>
+		</v-row>
+		<v-row
+			justify="center"
+			align="center"
+			v-if="images.length > 0 && !loading"
+		>
 			<v-col
-				cols="4"
+				cols="12"
 				sm="6"
-				md="3"
-				v-for="(image, i) in images"
+				md="4"
+				v-for="image in images"
 				:key="image.id"
 			>
 				<v-skeleton-loader
@@ -17,12 +33,7 @@
 						<v-img
 							class="white--text align-end"
 							height="200px"
-							:src="`https://picsum.photos/500/300?image=${
-								i * 5 + 10
-							}`"
-							:lazy-src="`https://picsum.photos/10/6?image=${
-								i * 5 + 10
-							}`"
+							:src="`data:image/jpeg;base64,${image.image}`"
 						>
 							<template v-slot:placeholder>
 								<v-row
@@ -41,14 +52,25 @@
 							>ID: {{ image._id }}</v-card-subtitle
 						>
 						<v-card-text class="text--primary">
-							<div>Created at: {{ image.date }}</div>
+							<div>Created at: {{ properDate(image.date) }}</div>
 							<div>Uploaded by: {{ image.user_id }}</div>
 						</v-card-text>
 						<v-card-actions>
-							<v-btn color="orange" text :to="'/review/' + image._id"> Review </v-btn>
+							<v-btn
+								color="orange"
+								text
+								:to="'/review/' + image._id"
+							>
+								Review
+							</v-btn>
 						</v-card-actions>
 					</v-card>
 				</v-skeleton-loader>
+			</v-col>
+		</v-row>
+		<v-row justify="center" align="center" v-else>
+			<v-col cols="12">
+				<p class="display-1 text-center">No data!</p>
 			</v-col>
 		</v-row>
 		<v-row justify="center" align="center" v-if="loading === false">
@@ -69,6 +91,8 @@
 </template>
 
 <script>
+import moment from 'moment'
+
 export default {
 	data() {
 		return {
@@ -77,7 +101,8 @@ export default {
 			transition: 'scale-transition',
 			allImages: [],
 			images: [],
-			paginationLength: ''
+			paginationLength: '',
+			search: '',
 		}
 	},
 
@@ -95,9 +120,27 @@ export default {
 
 		changePage(page) {
 			this.images = this.allImages.filter((image, i) => {
-				return i >= ((page - 1) * 10) && i < (page * 10)
+				return i >= (page - 1) * 10 && i < page * 10
 			})
-		}
+		},
+
+		properDate(date) {
+			return moment(date).format('MMMM Do YYYY, h:mm:ss a')
+		},
+
+		searchImages(e) {
+			if (!this.search) {
+				this.images = this.allImages.slice(0, 10)
+			}
+
+			this.images = this.allImages.filter((image) => {
+				return (
+					image.imageName
+						.toLowerCase()
+						.indexOf(this.search.toLowerCase()) > -1
+				)
+			})
+		},
 	},
 
 	mounted() {

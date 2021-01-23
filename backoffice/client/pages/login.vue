@@ -81,7 +81,7 @@ export default {
 			})
 
 			try {
-				await this.$auth.setUserToken(data.response.token)
+				await this.$auth.setUserToken(data.token)
 
 				this.snackbar = true
 				this.snackbarColor = 'green'

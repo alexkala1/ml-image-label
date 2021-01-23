@@ -1,11 +1,27 @@
 <template>
 	<v-container>
 		<v-row justify="center" align="center">
+			<v-col cols="12" md="6" >
+				<v-text-field
+					outlined
+					v-model="search"
+					append-icon="mdi-magnify"
+					placeholder="Search"
+					@input="searchImages"
+				>
+				</v-text-field>
+			</v-col>
+		</v-row>
+		<v-row
+			justify="center"
+			align="center"
+			v-if="images.length > 0 && !loading"
+		>
 			<v-col
-				cols="4"
+				cols="12"
 				sm="6"
-				md="3"
-				v-for="(image, i) in images"
+				md="4"
+				v-for="image in images"
 				:key="image.id"
 			>
 				<v-skeleton-loader
@@ -52,6 +68,11 @@
 				</v-skeleton-loader>
 			</v-col>
 		</v-row>
+		<v-row justify="center" align="center" v-else>
+			<v-col cols="12">
+				<p class="display-1 text-center">No data!</p>
+			</v-col>
+		</v-row>
 		<v-row justify="center" align="center" v-if="loading === false">
 			<v-pagination
 				v-model="page"
@@ -70,7 +91,7 @@
 </template>
 
 <script>
-import moment from "moment";
+import moment from 'moment'
 
 export default {
 	data() {
@@ -81,6 +102,7 @@ export default {
 			allImages: [],
 			images: [],
 			paginationLength: '',
+			search: '',
 		}
 	},
 
@@ -104,6 +126,20 @@ export default {
 
 		properDate(date) {
 			return moment(date).format('MMMM Do YYYY, h:mm:ss a')
+		},
+
+		searchImages(e) {
+			if (!this.search) {
+				this.images = this.allImages.slice(0, 10)
+			}
+
+			this.images = this.allImages.filter((image) => {
+				return (
+					image.imageName
+						.toLowerCase()
+						.indexOf(this.search.toLowerCase()) > -1
+				)
+			})
 		},
 	},
 
