@@ -1,6 +1,8 @@
 <template>
 	<v-app-bar dark app>
-		<v-toolbar-title>Image-Labeling-Backoffice</v-toolbar-title>
+		<v-toolbar-title>
+			<v-btn text plain to="/"> Image-Labeling-Backoffice </v-btn>
+		</v-toolbar-title>
 		<v-tabs centered show-arrows>
 			<v-tab v-for="route in routes" :key="route.path" :to="route.path">
 				{{ route.name }}
@@ -15,10 +17,6 @@ export default {
 	data() {
 		return {
 			routes: [
-				{
-					path: '/',
-					name: 'Home',
-				},
 				{
 					path: '/approved',
 					name: 'Approved Images',
@@ -43,7 +41,7 @@ export default {
 			await this.$auth.logout()
 			this.$router.push('/login')
 		},
-	}
+	},
 }
 </script>
 <style scoped>
