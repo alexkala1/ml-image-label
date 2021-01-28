@@ -13,7 +13,7 @@
 			</v-col>
 		</v-row>
 		<v-row justify="center" v-if="images.length > 0 && !loading">
-			<v-col cols="3">
+			<v-col cols="2">
 				<v-list-group v-for="dataset in datasets" :key="dataset.id">
 					<template v-slot:activator>
 						<v-list-item-content class="py-0">
@@ -47,12 +47,36 @@
 					</v-list-item>
 				</v-list-group>
 			</v-col>
-			<v-col cols="9">
+			<v-col cols="10">
+				<v-row justify="space-between" align="center" mo-gutters>
+					<v-col cols="3">
+						<v-select
+							filled
+							rounded
+							item-value="imageFilters"
+							v-model="imageFilter"
+							:items="imageFilters"
+							label="Images"
+							placeholder="Select..."
+						></v-select>
+					</v-col>
+					<v-col cols="2">
+						<v-pagination
+							v-model="page"
+							class="my-4"
+							total-visible="7"
+							:length="paginationLength"
+							@input="changePage(page)"
+							circle
+						></v-pagination>
+					</v-col>
+				</v-row>
+
 				<v-row justify="center">
 					<v-col
 						cols="12"
 						sm="6"
-						md="4"
+						md="3"
 						v-for="image in images"
 						:key="image.id"
 					>
@@ -98,13 +122,13 @@
 									<h3>
 										Uploaded by:
 										<span class="font-weight-light">
-											{{ image.user_id }}
+											{{ image.email }}
 										</span>
 									</h3>
 								</v-card-text>
 								<v-card-actions>
 									<v-btn
-										color="orange"
+										color="primary"
 										text
 										:to="'/review/' + image._id"
 									>
@@ -116,25 +140,21 @@
 					</v-col>
 				</v-row>
 			</v-col>
+			<v-row justify="center" align="center">
+				<v-pagination
+					v-model="page"
+					class="my-4"
+					total-visible="7"
+					:length="paginationLength"
+					@input="changePage(page)"
+					circle
+				></v-pagination>
+			</v-row>
 		</v-row>
 		<v-row justify="center" align="center" v-else>
 			<v-col cols="12">
 				<p class="display-1 text-center">No data!</p>
 			</v-col>
-		</v-row>
-		<v-row justify="center" align="center" v-if="loading === false">
-			<v-pagination
-				v-model="page"
-				class="my-4"
-				total-visible="7"
-				:length="paginationLength"
-				@input="changePage(page)"
-				circle
-			></v-pagination>
-		</v-row>
-		<v-row justify="center" align="center" v-else>
-			<v-progress-circular class="my-4" indeterminate>
-			</v-progress-circular>
 		</v-row>
 	</v-container>
 </template>
@@ -149,12 +169,16 @@ export default {
 			page: 1,
 			transition: 'scale-transition',
 			allImages: [],
+			imageFilter: "In review",
+			imageFilters: ['In review', 'All Images', 'Verified', 'Rejected'],
 			images: [],
 			paginationLength: '',
 			search: '',
 			datasets: [],
 			datasetsSelected: [],
 			labelsSelected: [],
+			allDatasetFilters: [],
+			allLabelFilters: [],
 		}
 	},
 
@@ -201,12 +225,12 @@ export default {
 
 			this.datasets = data
 
-			data.forEach(dataset => {
+			data.forEach((dataset) => {
 				this.datasetsSelected.push(dataset.name)
-				dataset.labels.forEach(label => {
+				dataset.labels.forEach((label) => {
 					this.labelsSelected.push(label)
 				})
-			});
+			})
 		},
 
 		filterByLabels() {
