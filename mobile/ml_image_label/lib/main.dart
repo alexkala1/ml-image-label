@@ -121,6 +121,8 @@ login(email, password) async {
     }),
   );
 
+  print(response.statusCode);
+
   if (response.statusCode == 200) {
     SharedPreferences store = await SharedPreferences.getInstance();
     var user = jsonDecode(response.body);
@@ -128,7 +130,7 @@ login(email, password) async {
     store.setString('lastName', user['lastName']);
     store.setString('email', user['email']);
     store.setString('userType', user['userType']);
-    store.setString('id', user['_id']);
+    store.setString('id', user['id']);
 
     return true;
   } else

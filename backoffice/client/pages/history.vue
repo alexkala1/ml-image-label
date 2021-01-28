@@ -1,28 +1,30 @@
 <template>
-	<v-row align="center" justify="center">
-		<v-col cols="12" sm="12" md="10">
-			<v-card>
-				<v-card-title>
-					History
-					<v-spacer></v-spacer>
-					<v-text-field
-						v-model="search"
-						append-icon="mdi-magnify"
-						label="Search"
-						single-line
-						hide-details
-					></v-text-field>
-				</v-card-title>
-				<v-data-table
-					:headers="headers"
-					:items="history"
-					:search="search"
-					:loading="loading"
-					loading-text="Loading... Please wait"
-				></v-data-table>
-			</v-card>
-		</v-col>
-	</v-row>
+	<v-container fluid>
+		<v-row align="center" justify="center" no-gutters>
+			<v-col cols="12">
+				<v-card>
+					<v-card-title>
+						History
+						<v-spacer></v-spacer>
+						<v-text-field
+							v-model="search"
+							append-icon="mdi-magnify"
+							label="Search"
+							single-line
+							hide-details
+						></v-text-field>
+					</v-card-title>
+					<v-data-table
+						:headers="headers"
+						:items="history"
+						:search="search"
+						:loading="loading"
+						loading-text="Loading... Please wait"
+					></v-data-table>
+				</v-card>
+			</v-col>
+		</v-row>
+	</v-container>
 </template>
 
 <script>
@@ -32,18 +34,17 @@ export default {
 			search: '',
 			loading: true,
 			headers: [
-				{ text: 'dataset', value: 'dataset' },
-				{ text: 'dataset_id', value: 'dataset_id' },
-				{ text: 'date', value: 'date' },
-				{ text: 'email', value: 'email' },
-				{ text: 'imageName', value: 'imageName' },
-				{ text: 'isHumanChecked', value: 'isHumanChecked' },
-				{ text: 'isVerified', value: 'isVerified' },
-				{ text: 'object', value: 'object' },
-				{ text: 'reviewedAt', value: 'reviewedAt' },
-				{ text: 'user_id', value: 'user_id' },
-				{ text: '__v', value: '__v' },
-				{ text: '_id', value: '_id' },
+				{ text: 'Dataset', value: 'dataset' },
+				{ text: 'Dataset Id', value: 'dataset_id' },
+				{ text: 'Date', value: 'date' },
+				{ text: 'Email', value: 'email' },
+				{ text: 'Image', value: 'imageName' },
+				{ text: 'Reviewed', value: 'isHumanChecked' },
+				{ text: 'Verified', value: 'isVerified' },
+				{ text: 'Object', value: 'object' },
+				{ text: 'Reviewed At', value: 'reviewedAt' },
+				{ text: 'User ID', value: 'user_id' },
+				{ text: 'ID', value: '_id' },
 			],
 			history: [],
 		}

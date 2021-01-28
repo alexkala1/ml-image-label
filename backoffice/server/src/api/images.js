@@ -21,8 +21,6 @@ const upload = multer({
 // Create new image
 router.post('/', upload.single('image'), async (req, res, next) => {
 
-	console.log(req.body.image)
-
 	const image = new Image({
 		email: req.body.email,
 		user_id: req.body.user_id,

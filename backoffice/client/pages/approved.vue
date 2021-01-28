@@ -1,7 +1,7 @@
 <template>
 	<v-container>
 		<v-row justify="center" align="center">
-			<v-col cols="12" md="6" >
+			<v-col cols="12" md="6">
 				<v-text-field
 					outlined
 					v-model="search"
@@ -29,10 +29,10 @@
 					:transition="transition"
 					type="card, actions"
 				>
-					<v-card class="mx-auto" max-width="400">
+					<v-card class="mx-auto">
 						<v-img
 							class="white--text align-end"
-							height="200px"
+							height="400px"
 							:src="`data:image/jpeg;base64,${image.image}`"
 						>
 							<template v-slot:placeholder>
@@ -48,12 +48,25 @@
 							</template>
 							<v-card-title>{{ image.imageName }}</v-card-title>
 						</v-img>
-						<v-card-subtitle class="pb-0"
-							>ID: {{ image._id }}</v-card-subtitle
-						>
 						<v-card-text class="text--primary">
-							<div>Created at: {{ properDate(image.date) }}</div>
-							<div>Uploaded by: {{ image.user_id }}</div>
+							<h3>
+								ID:
+								<span class="font-weight-light">
+									{{ image._id }}
+								</span>
+							</h3>
+							<h3>
+								Created at:
+								<span class="font-weight-light">
+									{{ properDate(image.date) }}
+								</span>
+							</h3>
+							<h3>
+								Uploaded by:
+								<span class="font-weight-light">
+									{{ image.user_id }}
+								</span>
+							</h3>
 						</v-card-text>
 						<v-card-actions>
 							<v-btn

@@ -64,6 +64,7 @@ class _MyHomePageState extends State<MyHomePage> {
       return;
     }
 
+
     String fileName = tmpFile.path.split('/').last;
     fetchUser();
     upload(fileName);
@@ -71,7 +72,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   upload(String fileName) async {
     SharedPreferences store = await SharedPreferences.getInstance();
-
+    // var email = store.getString('email');
+    // var id = store.getString('id');
     await http.post('http://10.0.2.2:3001/api/v1/images',
             headers: {"Content-Type": "application/json"},
             body: jsonEncode({
@@ -87,10 +89,10 @@ class _MyHomePageState extends State<MyHomePage> {
                   "label": "lounge",
                   "bbox": [
                     {
-                      "x": 100,
-                      "y": 100,
-                      "width": 100,
-                      "height": 100,
+                      "x": 300,
+                      "y": 250,
+                      "width": 500,
+                      "height": 500,
                     }
                   ]
                 }
@@ -103,7 +105,21 @@ class _MyHomePageState extends State<MyHomePage> {
       setStatus(error);
     });
   }
+  _onTapDown(TapDownDetails details) {
+    var x = details.globalPosition.dx;
+    var y = details.globalPosition.dy;
+    // or user the local position method to get the offset
+    print(details.localPosition);
+    print("tap down " + x.toString() + ", " + y.toString());
+  }
 
+  _onTapUp(TapUpDetails details) {
+    var x = details.globalPosition.dx;
+    var y = details.globalPosition.dy;
+    // or user the local position method to get the offset
+    print(details.localPosition);
+    print("tap up " + x.toString() + ", " + y.toString());
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -135,11 +151,16 @@ class _MyHomePageState extends State<MyHomePage> {
 
                   return Container(
                     margin: EdgeInsets.all(15),
-                    child: Material(
-                      elevation: 3.0,
-                      child: Image.file(
-                        snapshot.data,
-                        fit: BoxFit.fill,
+                    child: new GestureDetector(
+                      onTap: () => print('tapped!'),
+                      onTapDown: (TapDownDetails details) => _onTapDown(details),
+                      onTapUp: (TapUpDetails details) => _onTapUp(details),
+                      child: Material(
+                        elevation: 3.0,
+                        child: Image.file(
+                          snapshot.data,
+                          fit: BoxFit.fill,
+                        ),
                       ),
                     ),
                   );

@@ -33,6 +33,10 @@ export default {
 					path: '/history',
 					name: 'History',
 				},
+				{
+					path: '/datasets',
+					name: 'Datasets',
+				},
 			],
 		}
 	},

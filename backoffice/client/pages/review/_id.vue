@@ -17,9 +17,9 @@
 				</v-row>
 			</v-card>
 		</v-dialog>
-		<v-row align="center" justify="center">
+		<v-row justify="center">
 			<v-col cols="12" md="3">
-				<v-card height="700">
+				<v-card height="100%">
 					<v-card-title class="subheading font-weight-bold">
 						{{ image.imageName }}
 					</v-card-title>
@@ -91,25 +91,24 @@
 				</v-card>
 			</v-col>
 			<v-col cols="12" md="9">
-				<v-img
-					max-height="700"
-					contain
+				<img
+					id="theImg"
 					:src="`data:image/jpeg;base64,${image.image}`"
 					class="grey lighten-2"
-				>
-					<template v-slot:placeholder>
-						<v-row
-							class="fill-height ma-0"
-							align="center"
-							justify="center"
-						>
-							<v-progress-circular
-								indeterminate
-								color="grey lighten-5"
-							></v-progress-circular>
-						</v-row>
-					</template>
-				</v-img>
+				/>
+				<canvas id="myCanvas" :width="1000" :height="1000"> </canvas>
+				<template v-slot:placeholder>
+					<v-row
+						class="fill-height ma-0"
+						align="center"
+						justify="center"
+					>
+						<v-progress-circular
+							indeterminate
+							color="grey lighten-5"
+						></v-progress-circular>
+					</v-row>
+				</template>
 			</v-col>
 			<v-col class="d-flex justify-end">
 				<v-btn color="orange" @click="approve()" text class="mr-2"
@@ -155,11 +154,43 @@ export default {
 			message: '',
 			image: '',
 			loading: true,
+			canvasWidth: '',
+			canvasHeight: '',
 		}
 	},
 	methods: {
 		properDate(date) {
 			return moment(date).format('MMMM Do YYYY, h:mm:ss a')
+		},
+
+		drawCoords() {
+			const imgObject = this.image.object
+			var img = document.getElementById('theImg')
+			var cnvs = document.getElementById('myCanvas')
+
+			cnvs.style.position = 'absolute'
+			cnvs.style.left = img.offsetLeft + 'px'
+			cnvs.style.top = img.offsetTop + 'px'
+			this.canvasWidth = img.width
+			this.canvasHeight = img.height
+
+			console.log(img.width, img.height)
+			var ctx = cnvs.getContext('2d')
+			ctx.beginPath()
+			imgObject.forEach((label) => {
+				ctx.fillStyle = '#00ff00'
+				ctx.font = '16px Nunito'
+				ctx.fillText(label.label, label.bbox[0].x, label.bbox[0].y - 10)
+				ctx.rect(
+					label.bbox[0].x,
+					label.bbox[0].y,
+					label.bbox[0].width,
+					label.bbox[0].height
+				)
+				ctx.lineWidth = 3
+				ctx.strokeStyle = '#00ff00'
+				ctx.stroke()
+			})
 		},
 
 		async getImage() {
@@ -228,8 +259,8 @@ export default {
 		},
 	},
 
-	mounted() {
-		this.getImage()
+	async mounted() {
+		await this.getImage(), this.drawCoords()
 	},
 }
 </script>
