@@ -111,10 +111,10 @@
 				</template>
 			</v-col>
 			<v-col class="d-flex justify-end">
-				<v-btn color="orange" @click="approve()" text class="mr-2"
+				<v-btn color="primary" @click="approve()" text class="mr-2"
 					>Approve</v-btn
 				>
-				<v-btn color="orange" @click="reject()" text class="mr-2"
+				<v-btn color="primary" @click="reject()" text class="mr-2"
 					>Reject</v-btn
 				>
 			</v-col>
