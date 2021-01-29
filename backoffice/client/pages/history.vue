@@ -13,11 +13,6 @@
 							single-line
 							hide-details
 						>
-						<template v-slot:[`item`]="{ headers, item }">
-							<td :colspan="headers.length">
-								{{ item.object[0].label }}
-							</td>
-						</template>
 						</v-text-field>
 					</v-card-title>
 					<v-data-table
