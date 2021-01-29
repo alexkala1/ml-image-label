@@ -46,7 +46,7 @@ const imageSchema = mongoose.Schema({
         type: [{
             label: {
                 required: true,
-                type: String
+                type: Array
             },
             bbox: {
                 type: [{
