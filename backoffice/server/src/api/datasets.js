@@ -21,6 +21,7 @@ router.get('/', async (req, res) => {
 		let labels = await Label.find({ dataset_id: dataset.id })
 
 		return {
+			id: dataset._id,
 			name: dataset.name,
 			labels: labels.map(label => {
 				return label.name
@@ -41,6 +42,7 @@ router.get('/dataset/:id', async (req, res) => {
 		let labels = await Label.find({ dataset_id: dataset.id })
 
 		return {
+			id: dataset._id,
 			name: dataset.name,
 			labels: labels.map(label => {
 				return label.name
