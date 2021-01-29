@@ -168,7 +168,7 @@ export default {
 		dialog: false,
 		dialogDelete: false,
 		headers: [
-			{ text: 'ID', value: '_id' },
+			{ text: 'ID', value: 'id' },
 			{ text: 'Dataset Name', value: 'name' },
 			{ text: 'Labels', value: 'labels' },
 			{ text: 'Actions', value: 'actions', sortable: false },
@@ -208,32 +208,13 @@ export default {
 
 	methods: {
 		async fetchDatasets() {
-			const datasets = await this.$axios.get(
+			const { data } = await this.$axios.get(
 				'http://localhost:3001/api/v1/datasets'
 			)
 
-			this.datasets = await Promise.all(
-				datasets.data.map(async (dataset) => {
-					const labels = await this.$axios.get(
-						`http://localhost:3001/api/v1/datasets/label/${dataset._id}`
-					)
-					let temptable = []
-					labels.data.forEach((label, i) => {
-						temptable.push(label.name)
-					})
-
-					dataset.labels = temptable
-					temptable = []
-
-					console.log(labels.data)
-
-					return await dataset
-				})
-			)
+			this.datasets = data
 
 			console.log(this.datasetsSelected, this.labelsSelected)
-
-			return await this.datasets
 		},
 
 		editDataset(item) {
