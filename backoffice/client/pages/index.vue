@@ -58,6 +58,7 @@
 							:items="imageFilters"
 							label="Images"
 							placeholder="Select..."
+							@change="getAllImages(imageFilter)"
 						></v-select>
 					</v-col>
 					<v-col cols="2">
@@ -183,15 +184,48 @@ export default {
 	},
 
 	methods: {
-		async getAllImages() {
-			const { data } = await this.$axios.get(
-				`http://localhost:3001/api/v1/images/nonReviewed`
-			)
+		async getAllImages(filter) {
+			switch (filter) {
+				case 'All Images':
+					let getAll = await this.$axios.get(
+						'http://localhost:3001/api/v1/images/allImages'
+					)
+					this.allImages = getAll.data
+					this.paginationLength = Math.ceil(getAll.data.length / 10)
+					this.images = this.allImages.slice(0, 10)
+					this.loading = false
+					break
 
-			this.allImages = data
-			this.paginationLength = Math.ceil(data.length / 10)
-			this.images = this.allImages.slice(0, 10)
-			this.loading = false
+				case 'Verified':
+					let getVerified = await this.$axios.get(
+						'http://localhost:3001/api/v1/images/verified'
+					)
+					this.allImages = getVerified.data
+					this.paginationLength = Math.ceil(getVerified.data.length / 10)
+					this.images = this.allImages.slice(0, 10)
+					this.loading = false
+					break
+
+				case 'Rejected':
+					let getRejected = await this.$axios.get(
+						'http://localhost:3001/api/v1/images/rejected'
+					)
+					this.allImages = getRejected.data
+					this.paginationLength = Math.ceil(getRejected.data.length / 10)
+					this.images = this.allImages.slice(0, 10)
+					this.loading = false
+					break
+
+				default:
+					let { data } = await this.$axios.get(
+						'http://localhost:3001/api/v1/images/nonReviewed'
+					)
+					this.allImages = data
+					this.paginationLength = Math.ceil(data.length / 10)
+					this.images = this.allImages.slice(0, 10)
+					this.loading = false
+					break
+			}
 		},
 
 		changePage(page) {
