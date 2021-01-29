@@ -8,19 +8,27 @@
 						<v-spacer></v-spacer>
 						<v-text-field
 							v-model="search"
-							append-icon="mdi-magnify"
+							prepend-icon="mdi-magnify"
 							label="Search"
 							single-line
 							hide-details
-						></v-text-field>
+						>
+						<template v-slot:[`item`]="{ headers, item }">
+							<td :colspan="headers.length">
+								{{ item.object[0].label }}
+							</td>
+						</template>
+						</v-text-field>
 					</v-card-title>
 					<v-data-table
 						:headers="headers"
 						:items="history"
 						:search="search"
 						:loading="loading"
+						@click:row="goToImage"
 						loading-text="Loading... Please wait"
-					></v-data-table>
+					>
+					</v-data-table>
 				</v-card>
 			</v-col>
 		</v-row>
@@ -41,7 +49,7 @@ export default {
 				{ text: 'Image', value: 'imageName' },
 				{ text: 'Reviewed', value: 'isHumanChecked' },
 				{ text: 'Verified', value: 'isVerified' },
-				{ text: 'Object', value: 'object' },
+				{ text: 'Labels', value: 'object[0].label' },
 				{ text: 'Reviewed At', value: 'reviewedAt' },
 				{ text: 'User ID', value: 'user_id' },
 				{ text: 'ID', value: '_id' },
@@ -57,12 +65,21 @@ export default {
 					'http://localhost:3001/api/v1/images/history'
 				)
 				this.history = data
+				console.log(data)
 				this.loading = false
 			} catch (error) {
 				alert(error)
 				this.loading = false
 			}
 		},
+
+		goToImage(image) {
+			return this.$router.push('/review/' + image._id)
+		},
+
+		test(shit) {
+			console.log(shit)
+		}
 	},
 
 	mounted() {
