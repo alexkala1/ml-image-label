@@ -169,7 +169,7 @@ export default {
 			page: 1,
 			transition: 'scale-transition',
 			allImages: [],
-			imageFilter: "In review",
+			imageFilter: 'In review',
 			imageFilters: ['In review', 'All Images', 'Verified', 'Rejected'],
 			images: [],
 			paginationLength: '',
@@ -227,8 +227,10 @@ export default {
 
 			data.forEach((dataset) => {
 				this.datasetsSelected.push(dataset.name)
+				this.allDatasetFilters.push(dataset.name)
 				dataset.labels.forEach((label) => {
 					this.labelsSelected.push(label)
+					this.allLabelFilters.push(label)
 				})
 			})
 		},
