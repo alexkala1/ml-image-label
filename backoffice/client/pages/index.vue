@@ -14,41 +14,12 @@
 		</v-row>
 		<v-row justify="center" v-if="images.length > 0 && !loading">
 			<v-col cols="2">
-				<v-list-group v-for="dataset in datasets" :key="dataset.id">
-					<template v-slot:activator>
-						<v-list-item-content class="py-0">
-							<v-list-item-title>
-								<v-checkbox
-									@click="filterByLabels"
-									class="px-2"
-									:disabled="loading"
-									:label="dataset.name"
-									:value="dataset.name"
-									v-model="datasetsSelected"
-								>
-								</v-checkbox>
-							</v-list-item-title>
-						</v-list-item-content>
-					</template>
-
-					<v-list-item
-						v-for="label in dataset.labels"
-						:key="label.id"
-						class="px-12"
-					>
-						<v-checkbox
-							class="pt-1 mt-1"
-							@click="filterByLabels"
-							:disabled="loading"
-							v-model="labelsSelected"
-							:value="label"
-							:label="label"
-						></v-checkbox>
-					</v-list-item>
-				</v-list-group>
+				<h3 class="heading text-center font-weight-light py-5">
+					Datasets and labels
+				</h3>
 			</v-col>
 			<v-col cols="10">
-				<v-row justify="space-between" align="center" mo-gutters>
+				<v-row justify="space-between" align="center">
 					<v-col cols="3">
 						<v-select
 							filled
@@ -72,75 +43,91 @@
 						></v-pagination>
 					</v-col>
 				</v-row>
-
-				<v-row justify="center">
-					<v-col
-						cols="12"
-						sm="6"
-						md="3"
-						v-for="image in images"
-						:key="image.id"
-					>
-						<v-skeleton-loader
-							:loading="loading"
-							:transition="transition"
-							type="card, actions"
-						>
-							<v-card class="mx-auto">
-								<v-img
-									class="white--text align-end"
-									height="400px"
-									:src="`data:image/jpeg;base64,${image.image}`"
-								>
-									<template v-slot:placeholder>
-										<v-row
-											class="fill-height ma-0"
-											align="center"
-											justify="center"
-										>
-											<v-progress-circular
-												indeterminate
-											></v-progress-circular>
-										</v-row>
-									</template>
-									<v-card-title>{{
-										image.imageName
-									}}</v-card-title>
-								</v-img>
-								<v-card-text class="text--primary">
-									<h3>
-										ID:
-										<span class="font-weight-light">
-											{{ image._id }}
-										</span>
-									</h3>
-									<h3>
-										Created at:
-										<span class="font-weight-light">
-											{{ properDate(image.date) }}
-										</span>
-									</h3>
-									<h3>
-										Uploaded by:
-										<span class="font-weight-light">
-											{{ image.email }}
-										</span>
-									</h3>
-								</v-card-text>
-								<v-card-actions>
-									<v-btn
-										color="primary"
-										text
-										:to="'/review/' + image._id"
-									>
-										Review
-									</v-btn>
-								</v-card-actions>
-							</v-card>
-						</v-skeleton-loader>
-					</v-col>
-				</v-row>
 			</v-col>
+			<v-row justify="center">
+				<v-col cols="2">
+					<div v-for="dataset in datasets" :key="dataset.id">
+						<v-select
+							rounded
+							outlined
+							multiple
+							:items="dataset.labels"
+							v-model="selectedDatasets"
+							:label="dataset.name"
+						>
+						</v-select>
+					</div>
+				</v-col>
+				<v-col cols="10">
+					<v-row justify="center">
+						<v-col
+							cols="12"
+							sm="6"
+							md="3"
+							v-for="image in images"
+							:key="image.id"
+						>
+							<v-skeleton-loader
+								:loading="loading"
+								:transition="transition"
+								type="card, actions"
+							>
+								<v-card class="mx-auto">
+									<v-img
+										class="white--text align-end"
+										height="400px"
+										:src="`data:image/jpeg;base64,${image.image}`"
+									>
+										<template v-slot:placeholder>
+											<v-row
+												class="fill-height ma-0"
+												align="center"
+												justify="center"
+											>
+												<v-progress-circular
+													indeterminate
+												></v-progress-circular>
+											</v-row>
+										</template>
+										<v-card-title>{{
+											image.imageName
+										}}</v-card-title>
+									</v-img>
+									<v-card-text class="text--primary">
+										<h3>
+											ID:
+											<span class="font-weight-light">
+												{{ image._id }}
+											</span>
+										</h3>
+										<h3>
+											Created at:
+											<span class="font-weight-light">
+												{{ properDate(image.date) }}
+											</span>
+										</h3>
+										<h3>
+											Uploaded by:
+											<span class="font-weight-light">
+												{{ image.email }}
+											</span>
+										</h3>
+									</v-card-text>
+									<v-card-actions>
+										<v-btn
+											color="primary"
+											text
+											:to="'/review/' + image._id"
+										>
+											Review
+										</v-btn>
+									</v-card-actions>
+								</v-card>
+							</v-skeleton-loader>
+						</v-col>
+					</v-row>
+				</v-col>
+			</v-row>
 			<v-row justify="center" align="center">
 				<v-pagination
 					v-model="page"
@@ -176,7 +163,7 @@ export default {
 			paginationLength: '',
 			search: '',
 			datasets: [],
-			datasetsSelected: [],
+			selectedDatasets: [],
 			labelsSelected: [],
 			allDatasetFilters: [],
 			allLabelFilters: [],
@@ -201,7 +188,9 @@ export default {
 						'http://localhost:3001/api/v1/images/verified'
 					)
 					this.allImages = getVerified.data
-					this.paginationLength = Math.ceil(getVerified.data.length / 10)
+					this.paginationLength = Math.ceil(
+						getVerified.data.length / 10
+					)
 					this.images = this.allImages.slice(0, 10)
 					this.loading = false
 					break
@@ -211,7 +200,9 @@ export default {
 						'http://localhost:3001/api/v1/images/rejected'
 					)
 					this.allImages = getRejected.data
-					this.paginationLength = Math.ceil(getRejected.data.length / 10)
+					this.paginationLength = Math.ceil(
+						getRejected.data.length / 10
+					)
 					this.images = this.allImages.slice(0, 10)
 					this.loading = false
 					break
@@ -258,15 +249,6 @@ export default {
 			)
 
 			this.datasets = data
-
-			data.forEach((dataset) => {
-				this.datasetsSelected.push(dataset.name)
-				this.allDatasetFilters.push(dataset.name)
-				dataset.labels.forEach((label) => {
-					this.labelsSelected.push(label)
-					this.allLabelFilters.push(label)
-				})
-			})
 		},
 
 		filterByLabels() {
