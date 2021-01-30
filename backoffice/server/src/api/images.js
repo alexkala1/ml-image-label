@@ -46,7 +46,7 @@ router.get('/allImages', async (req, res, next) => {
 
 		return res.json(images)
 	} catch (error) {
-		return res.json(error)
+		throw new Error(error)
 	}
 })
 
@@ -57,7 +57,7 @@ router.get('/rejected', async (req, res, next) => {
 
 		return res.json(images)
 	} catch (error) {
-		return res.json(error)
+		throw new Error(error)
 	}
 })
 
@@ -68,7 +68,7 @@ router.get('/verified', async (req, res, next) => {
 
 		return res.json(images)
 	} catch (error) {
-		return res.json(error)
+		throw new Error(error)
 	}
 })
 
@@ -79,7 +79,7 @@ router.get('/verified/:user_id', async (req, res, next) => {
 
 		return res.json(images)
 	} catch (error) {
-		return res.json(error)
+		throw new Error(error)
 	}
 })
 
@@ -90,7 +90,7 @@ router.get('/history', async (req, res) => {
 
 		return res.json(images)
 	} catch (error) {
-		return res.json(error)
+		throw new Error(error)
 	}
 })
 
@@ -101,7 +101,7 @@ router.get('/nonReviewed', async (req, res) => {
 
 		return res.json(images)
 	} catch (error) {
-		return res.json(error)
+		throw new Error(error)
 	}
 })
 
@@ -112,7 +112,7 @@ router.get('/:_id', async (req, res, next) => {
 
 		return res.json(image)
 	} catch (error) {
-		return res.json(error)
+		throw new Error(error)
 	}
 })
 // Verify an image
@@ -123,13 +123,14 @@ router.put('/verify/:_id', async (req, res, next) => {
 		image.reviewedAt = Date.now();
 		image.isVerified = true;
 
-		await image.save();
+		// console.log(image)
 
-		console.log(image)
+		await image.save();
 
 		return res.json(image);
 	} catch (error) {
-		return res.json(error);
+		console.log(error)
+		throw new Error(error)
 	}
 })
 
@@ -147,7 +148,7 @@ router.put('/reject/:_id', async (req, res, next) => {
 
 		return res.json(image);
 	} catch (error) {
-		return res.json(error);
+		throw new Error(error)
 	}
 })
 
@@ -158,7 +159,7 @@ router.delete('/:_id', async (req, res, next) => {
 
 		return res.json(image)
 	} catch (error) {
-		return res.json(error)
+		throw new Error(error)
 	}
 })
 
