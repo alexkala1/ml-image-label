@@ -13,19 +13,18 @@
 					:items="dataset.labels"
 					v-model="selectedDatasets[index]"
 					:label="dataset.name"
-					@input="test(selectedDatasets)"
 				>
 					<template v-slot:prepend-item>
 						<v-list-item ripple @click="toggle(index)">
 							<v-list-item-action>
 								<v-icon
 									:color="
-										selectedDatasets[index].length > 0
+										selectedAllDatasets === true
 											? 'indigo darken-4'
 											: ''
 									"
 								>
-									{{ selectedDatasets[index].length > 0 ? 'mdi-close-box' : 'mdi-checkbox-blank-outline' }}
+									{{ icon }}
 								</v-icon>
 							</v-list-item-action>
 							<v-list-item-content>
@@ -34,7 +33,7 @@
 								</v-list-item-title>
 							</v-list-item-content>
 						</v-list-item>
-						<v-divider class="mt-2"></v-divider>
+						<v-divider></v-divider>
 					</template>
 				</v-select>
 			</v-col>
@@ -48,7 +47,34 @@ export default {
 		return {
 			datasets: [],
 			selectedDatasets: [],
+			icon: '',
 		}
+	},
+
+	watch: {
+		selectedDatasets: function (labels) {
+			labels.forEach((label) => {
+				console.log(label)
+				if (label) this.icon = 'mdi-close-box'
+				else this.icon = 'mdi-checkbox-blank-outline'
+			})
+		},
+
+		icon: function (icon) {
+			console.log(icon)
+		},
+	},
+
+	computed: {
+		selectedAllDatasets() {
+			this.selectedDatasets.filter((label, index) => {
+				// console.log(
+				// 	label,
+				// 	label.length === this.datasets[index].labels.length
+				// )
+				return label.length === this.datasets[index].labels.length
+			})
+		},
 	},
 
 	methods: {
@@ -56,25 +82,25 @@ export default {
 			const { data } = await this.$axios.get(
 				`http://localhost:3001/api/v1/datasets`
 			)
-			
+
 			data.forEach((dataset, index) => {
 				this.selectedDatasets[index] = []
-			});
-			this.datasets = data
-		},
+			})
 
-		test(test) {
-			console.log(test)
+			this.datasets = data
 		},
 
 		toggle(index) {
 			this.$nextTick(() => {
-				if (this.selectedDatasets[index].length > 0) {
-					this.selectedDatasets[index] = []
+				console.log(this.selectedDatasets[index].length === this.datasets[index].labels.length)
+				if (this.selectedDatasets[index].length === this.datasets[index].labels.length) {
+					this.selectedDatasets[index] = this.datasets[index].labels.splice()
 				} else {
-					this.selectedDatasets[index] = this.datasets[index].labels.slice()
+					console.log(this.selectedDatasets[index])
+					this.datasets[index].labels.forEach(label => {
+						this.selectedDatasets[index].push(label)	
+					})
 				}
-				console.log(this.selectedDatasets)
 			})
 		},
 	},
