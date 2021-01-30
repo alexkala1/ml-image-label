@@ -52,14 +52,17 @@
 												</v-col>
 												<v-col cols="12" sm="6" md="6">
 													<v-text-field
-														v-model="
-															editedDataset.label
-														"
+														v-model="newLabel"
 														append-outer-icon="mdi-plus-circle-outline"
 														label="Add Label"
 														@click:append-outer="
-															close
+															addLabel(
+																editedDataset
+															)
 														"
+														@keypress.enter="addLabel(
+																editedDataset
+															)"
 													>
 													</v-text-field>
 												</v-col>
@@ -79,15 +82,24 @@
 														<v-list-item
 															v-for="(
 																label, i
-															) in newLabels"
+															) in editedDataset.labels"
 															:key="i"
 														>
 															<v-text-field
 																width="150"
 																:value="label"
+																v-model="
+																	editedDataset
+																		.labels[
+																		i
+																	]
+																"
 																append-outer-icon="mdi-close"
 																@click:append-outer="
-																	close
+																	removeLabel(
+																		editedDataset,
+																		i
+																	)
 																"
 															>
 															</v-text-field>
@@ -134,7 +146,7 @@
 										<v-btn
 											color="blue darken-1"
 											text
-											@click="deleteDatasetConfirm"
+											@click="deleteDatasetConfirm(editedDataset)"
 											>OK</v-btn
 										>
 										<v-spacer></v-spacer>
@@ -174,15 +186,16 @@ export default {
 			{ text: 'Actions', value: 'actions', sortable: false },
 		],
 		datasets: [],
-		newLabels: [],
+		datasetLabels: [],
+		newLabel: '',
 		editedIndex: -1,
 		editedDataset: {
 			name: '',
-			labels: '',
+			labels: [],
 		},
 		defaultDataset: {
 			name: '',
-			labels: '',
+			labels: [],
 		},
 		search: '',
 	}),
@@ -213,13 +226,11 @@ export default {
 			)
 
 			this.datasets = data
-
-			console.log(this.datasetsSelected, this.labelsSelected)
 		},
 
 		editDataset(item) {
 			console.log(item)
-			this.newLabels = item.labels
+			this.datasetLabels = item.labels
 			this.editedIndex = this.datasets.indexOf(item)
 			this.editedDataset = Object.assign({}, item)
 			this.dialog = true
@@ -231,9 +242,20 @@ export default {
 			this.dialogDelete = true
 		},
 
-		deleteDatasetConfirm() {
-			this.datasets.splice(this.editedIndex, 1)
-			this.closeDelete()
+		async deleteDatasetConfirm(item) {
+
+			console.log(item)
+			await this.$axios.delete(
+				`http://localhost:3001/api/v1/datasets/${item.id}`
+			)
+
+			item.labelIds.forEach(async (id) => {
+				await this.$axios.delete(
+					`http://localhost:3001/api/v1/datasets/label/${id}`
+				)
+			})
+
+			location.reload()
 		},
 
 		close() {
@@ -252,16 +274,65 @@ export default {
 			})
 		},
 
-		save() {
+		removeLabel(item, index) {
+			return item.labels.splice(index, 1)
+		},
+
+		addLabel(item) {
+			console.log(item)
+			item.labels.push(this.newLabel)
+			this.newLabel = ''
+			return item
+		},
+
+		async save() {
 			if (this.editedIndex > -1) {
-				Object.assign(
-					this.datasets[this.editedIndex],
-					this.editedDataset
+				await this.$axios.put(
+					`http://localhost:3001/api/v1/datasets/dataset/${this.editedDataset.id}`,
+					{
+						name: this.editedDataset.name,
+					}
 				)
+
+				let labels = JSON.parse(
+					JSON.stringify(this.editedDataset.labels)
+				)
+				let labelIds = JSON.parse(
+					JSON.stringify(this.editedDataset.labelIds)
+				)
+
+				labelIds.forEach(async (id, index) => {
+					await this.$axios.put(
+						`http://localhost:3001/api/v1/datasets/label/${id}`,
+						{
+							name: labels[index],
+						}
+					)
+				})
 			} else {
-				this.datasets.push(this.editedDataset)
+				let response = await this.$axios.post(
+					'http://localhost:3001/api/v1/datasets/',
+					{
+						name: this.editedDataset.name,
+					}
+				)
+
+				let labels = JSON.parse(
+					JSON.stringify(this.editedDataset.labels)
+				)
+
+				labels.forEach(async (label, index) => {
+					await this.$axios.post(
+						`http://localhost:3001/api/v1/datasets/label/`,
+						{
+							name: label,
+							dataset_id: response.data._id,
+						}
+					)
+				})
 			}
-			this.close()
+
+			location.reload()
 		},
 	},
 }

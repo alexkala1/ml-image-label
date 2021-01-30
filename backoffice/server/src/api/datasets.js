@@ -25,6 +25,9 @@ router.get('/', async (req, res) => {
 			name: dataset.name,
 			labels: labels.map(label => {
 				return label.name
+			}),
+			labelIds: labels.map(label => {
+				return label._id
 			})
 		}
 	}))
@@ -45,7 +48,7 @@ router.get('/dataset/:id', async (req, res) => {
 			id: dataset._id,
 			name: dataset.name,
 			labels: labels.map(label => {
-				return label.name
+				return label.name, label._id
 			})
 		}
 	}))
@@ -111,7 +114,7 @@ router.get('/datasetsOnly', async (req, res) => {
  * Edit an existing dataset
  */
 router.put('/dataset/:id', async (req, res) => {
-	let dataset = await Dataset.find(req.params.id)
+	let dataset = await Dataset.findById(req.params.id)
 
 	dataset.name = req.body.name
 
@@ -124,7 +127,9 @@ router.put('/dataset/:id', async (req, res) => {
  * Edit an existing label
  */
 router.put('/label/:id', async (req, res) => {
-	let label = await Label.find(req.params.id)
+
+	console.log(req.body.name)
+	let label = await Label.findById(req.params.id)
 
 	label.name = req.body.name
 
@@ -137,7 +142,7 @@ router.put('/label/:id', async (req, res) => {
  * Delete an existing dataset
  */
 router.delete('/:id', async (req, res) => {
-	let dataset = await Dataset.findOneAndRemove(req.params.id)
+	await Dataset.findByIdAndRemove(req.params.id)
 
 	return res.json({ message: "Deleted Successfully!" })
 })
@@ -146,7 +151,7 @@ router.delete('/:id', async (req, res) => {
  * Delete an existing label
  */
 router.delete('/label/:id', async (req, res) => {
-	let label = await Label.findOneAndRemove(req.params.id)
+	await Label.findByIdAndRemove(req.params.id)
 
 	return res.json({ message: "Deleted Successfully!" })
 })
