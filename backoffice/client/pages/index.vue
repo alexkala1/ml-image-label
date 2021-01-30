@@ -46,15 +46,44 @@
 			</v-col>
 			<v-row justify="center">
 				<v-col cols="2">
-					<div v-for="dataset in datasets" :key="dataset.id">
-						<v-select
-							rounded
-							outlined
+					<div v-for="(dataset, index) in datasets" :key="dataset.id">
+						<v-select		
+							deletable-chips
+							chips
 							multiple
 							:items="dataset.labels"
-							v-model="selectedDatasets"
+							v-model="selectedDatasets[index]"
 							:label="dataset.name"
 						>
+							<template v-slot:prepend-item>
+								<v-list-item ripple @click="toggle(index)">
+									<v-list-item-action>
+										<v-icon
+											:color="
+												selectedDatasets[index]
+													.length ===
+												dataset.labels.length
+													? 'indigo darken-4'
+													: ''
+											"
+										>
+											{{
+												selectedDatasets[index]
+													.length ===
+												dataset.labels.length
+													? 'mdi-close-box'
+													: 'mdi-checkbox-blank-outline'
+											}}
+										</v-icon>
+									</v-list-item-action>
+									<v-list-item-content>
+										<v-list-item-title>
+											Select All
+										</v-list-item-title>
+									</v-list-item-content>
+								</v-list-item>
+								<v-divider></v-divider>
+							</template>
 						</v-select>
 					</div>
 				</v-col>
@@ -170,6 +199,12 @@ export default {
 		}
 	},
 
+	watch: {
+		selectedDatasets: function (labels) {
+			return labels
+		},
+	},
+
 	methods: {
 		async getAllImages(filter) {
 			switch (filter) {
@@ -248,12 +283,38 @@ export default {
 				'http://localhost:3001/api/v1/datasets'
 			)
 
+			data.forEach((dataset, index) => {
+				this.selectedDatasets[index] = []
+			})
+
 			this.datasets = data
 		},
 
 		filterByLabels() {
 			console.log(this.datasetsSelected, this.labelsSelected)
 			return this.datasetsSelected, this.labelsSelected
+		},
+
+		toggle(index) {
+			this.$nextTick(() => {
+				console.log(
+					this.selectedDatasets[index].length ===
+						this.datasets[index].labels.length
+				)
+				if (
+					this.selectedDatasets[index].length ===
+					this.datasets[index].labels.length
+				) {
+					this.selectedDatasets[index] = this.datasets[
+						index
+					].labels.splice()
+				} else {
+					console.log(this.selectedDatasets[index])
+					this.datasets[index].labels.forEach((label) => {
+						this.selectedDatasets[index].push(label)
+					})
+				}
+			})
 		},
 	},
 
