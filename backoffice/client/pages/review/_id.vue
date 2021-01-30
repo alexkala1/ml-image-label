@@ -214,11 +214,9 @@ export default {
 			console.log(this.$route.params.id)
 
 			try {
-				const response = await this.$axios.put(
+				await this.$axios.put(
 					`http://localhost:3001/api/v1/images/verify/${this.$route.params.id}`
 				)
-
-				console.log(response)
 
 				this.snackbar = true
 				this.snackbarColor = 'green'
@@ -238,7 +236,7 @@ export default {
 
 		async reject() {
 			try {
-				const response = await this.$axios.put(
+				await this.$axios.put(
 					`http://localhost:3001/api/v1/images/reject/${this.$route.params.id}`
 				)
 
