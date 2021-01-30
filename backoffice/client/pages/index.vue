@@ -47,7 +47,7 @@
 			<v-row justify="center">
 				<v-col cols="2">
 					<div v-for="(dataset, index) in datasets" :key="dataset.id">
-						<v-select		
+						<v-select
 							deletable-chips
 							chips
 							multiple
@@ -130,6 +130,12 @@
 											</span>
 										</h3>
 										<h3>
+											Labels:
+											<span class="font-weight-light">
+												{{ image.object[0].label }}
+											</span>
+										</h3>
+										<h3>
 											Created at:
 											<span class="font-weight-light">
 												{{ properDate(image.date) }}
@@ -201,6 +207,22 @@ export default {
 
 	watch: {
 		selectedDatasets: function (labels) {
+			let filter = []
+			labels.forEach((label) => {
+				if (label.length !== 0) {
+					filter.push(label)
+				}
+			})
+
+			if (filter.length === 0) {
+				this.paginationLength = Math.ceil(this.allImages.length / 10)
+				this.images = this.allImages.slice(0, 10)
+			} else {
+				this.images = this.allImages.filter(image => {
+					return image.object[0].label.indexOf(filter)
+				})
+				console.log(filter)
+			}
 			return labels
 		},
 	},
@@ -291,16 +313,11 @@ export default {
 		},
 
 		filterByLabels() {
-			console.log(this.datasetsSelected, this.labelsSelected)
 			return this.datasetsSelected, this.labelsSelected
 		},
 
 		toggle(index) {
 			this.$nextTick(() => {
-				console.log(
-					this.selectedDatasets[index].length ===
-						this.datasets[index].labels.length
-				)
 				if (
 					this.selectedDatasets[index].length ===
 					this.datasets[index].labels.length
@@ -309,7 +326,6 @@ export default {
 						index
 					].labels.splice()
 				} else {
-					console.log(this.selectedDatasets[index])
 					this.datasets[index].labels.forEach((label) => {
 						this.selectedDatasets[index].push(label)
 					})
