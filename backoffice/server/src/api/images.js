@@ -21,22 +21,25 @@ const upload = multer({
 // Create new image
 router.post('/', upload.single('image'), async (req, res, next) => {
 
-	const image = new Image({
-		email: req.body.email,
-		user_id: req.body.user_id,
-		image: req.body.image,
-		dataset: req.body.dataset,
-		dataset_id: req.body.dataset_id,
-		imageName: req.body.imageName,
-		isVerified: false,
-		isHumanChecked: false,
-		object: req.body.object,
-		date: Date.now()
-	});
+	try {
+		const image = new Image({
+			email: req.body.email,
+			user_id: req.body.user_id,
+			image: req.body.image,
+			dataset_id: req.body.dataset_id,
+			imageName: req.body.imageName,
+			isVerified: false,
+			isHumanChecked: false,
+			object: req.body.object,
+			date: Date.now()
+		});
 
-	await image.save();
+		await image.save();
 
-	return res.json(image);
+		return res.json(image);
+	} catch (error) {
+		throw new Error(error)
+	}
 })
 
 // Get all images

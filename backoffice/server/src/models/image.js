@@ -9,10 +9,6 @@ const imageSchema = mongoose.Schema({
         required: true,
         type: String,
     },
-    "dataset": {
-        required: true,
-        type: String,
-    },
     "dataset_id": {
         required: true,
         type: String,
