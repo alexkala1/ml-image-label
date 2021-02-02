@@ -4,6 +4,7 @@ import 'dart:io';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/painting.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -37,6 +38,7 @@ class _MyHomePageState extends State<MyHomePage> {
   var imagex;
   var imagey;
   var datasetValue;
+  var labelValue;
   var tempWidth;
   var tempHeight;
   var width;
@@ -53,11 +55,11 @@ class _MyHomePageState extends State<MyHomePage> {
     var response = await http.get('http://10.0.2.2:3001/api/v1/datasets');
     var allResponses = json.decode(response.body);
 
-    allResponses.map((dataset) {
-      print(dataset["labels"].toString());
-    });
-
     setState(() {
+      allResponses.map((dataset) {
+        print(dataset["labels"].toString());
+      });
+      labelValue = allResponses[0]['labels'][0];
       datasets = allResponses;
     });
 
@@ -97,11 +99,10 @@ class _MyHomePageState extends State<MyHomePage> {
               "email": store.getString('email'),
               "isHumanChecked": false,
               "user_id": store.getString('id'),
-              "dataset": "asdasdasd",
-              "dataset_id": "1",
+              "dataset_id": datasetValue,
               "object": [
                 {
-                  "label": "lounge",
+                  "label": labelValue,
                   "bbox": [
                     {
                       "x": imagex,
@@ -133,23 +134,29 @@ class _MyHomePageState extends State<MyHomePage> {
     print(tempHeight);
   }
 
-  onPanEnd() {
+  onPanEnd() async {
+    SharedPreferences store = await SharedPreferences.getInstance();
+
     width = tempWidth;
     height = tempHeight;
     tempWidth = 0;
     tempHeight = 0;
+
+    store.setDouble('width', width);
+    store.setDouble('height', height);
+    store.setDouble('x', imagex);
+    store.setDouble('y', imagey);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomPadding: false,
       appBar: AppBar(
         title: Text('Upload Image/Data'),
         centerTitle: true,
       ),
-      body: new Container(
-        height: double.infinity,
-        width: double.infinity,
+      body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
@@ -166,18 +173,27 @@ class _MyHomePageState extends State<MyHomePage> {
                   );
                   // print(image.height);
 
-                  return Container(
-                    padding: EdgeInsets.all(12),
-                    child: new GestureDetector(
-                      onTap: () => print(snapshot.data),
-                      onPanStart: (details) => onTap(details),
-                      onPanUpdate: (details) => onPanUpdate(details),
-                      onPanEnd: (details) => onPanEnd(),
-                      child: Material(
-                        elevation: 3.0,
-                        child: image,
+                  return Stack(
+                    children: [
+                      Container(
+                        padding: EdgeInsets.all(12),
+                        child: new GestureDetector(
+                          onTap: () => print(snapshot.data),
+                          onPanStart: (details) => onTap(details),
+                          onPanUpdate: (details) => onPanUpdate(details),
+                          onPanEnd: (details) => onPanEnd(),
+                          child: Material(
+                            elevation: 3.0,
+                            child: image,
+                          ),
+                        ),
                       ),
-                    ),
+                      Container(
+                        child: CustomPaint(
+                          painter: OpenPainter(),
+                        ),
+                      ),
+                    ],
                   );
                 } else if (null != snapshot.error) {
                   return const Text(
@@ -203,6 +219,17 @@ class _MyHomePageState extends State<MyHomePage> {
               height: 10.0,
             ),
             Container(
+              padding: EdgeInsets.all(12),
+              child: Text("X: " +
+                  imagex.toString() +
+                  " Y: " +
+                  imagey.toString() +
+                  " Width: " +
+                  width.toString() +
+                  " Height: " +
+                  height.toString()),
+            ),
+            Container(
               width: 360,
               height: 50,
               child: new DropdownButton(
@@ -215,6 +242,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 onChanged: (newVal) {
                   setState(() {
                     datasetValue = newVal;
+                    print(datasetValue);
                   });
                 },
                 value: datasetValue,
@@ -260,4 +288,23 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
   }
+}
+
+class OpenPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) async {
+    SharedPreferences store = await SharedPreferences.getInstance();
+
+    var paint1 = Paint()
+      ..color = Colors.lightGreen
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 6.0;
+    canvas.drawRect(
+        Offset(store.getDouble('x'), store.getDouble('y')) &
+            Size(store.getDouble('width'), store.getDouble('height')),
+        paint1);
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) => true;
 }
