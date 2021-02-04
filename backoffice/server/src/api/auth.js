@@ -38,10 +38,50 @@ router.post('/register', async (req, res) => {
 
 /**
  * Handles login functionality. Uses JWT for authentication.
- * WIP: Discuss login expiration time for JWT as well as
- * the checks for a valid person.
+ * Works only for admin and authorizes only him
  */
 router.post('/login', async (req, res) => {
+	const user = await User.findOne({
+		email: req.body.email,
+	})
+
+	// Check credentials
+	try {
+		if (bcrypt.compareSync(req.body.password, user.password) && user !== undefined) {
+			if (user.userType === "admin") {
+				// Sign user's email with jwt token
+				const token = jwt.sign({ email: req.body.email }, process.env.ACCESS_TOKEN, { expiresIn: '15m' })
+
+				// Create session user
+				const response = {
+					firstName: user.firstName,
+					lastName: user.lastName,
+					userType: user.userType,
+					email: user.email,
+					id: user._id,
+					token,
+				}
+
+				return res.json(response)
+			} else {
+				return res.status(401).json({ message: "You are not authorized to access this webpage." })
+			}
+		}
+		else if (!bcrypt.compareSync(req.body.password, user.password))
+			throw new Error('Λάθος κωδικός')
+		else if (user === undefined)
+			throw new Error('Δεν υφίσταται χρήστης με αυτό το email')
+	} catch (error) {
+		return res.status(403).json({ "error": "Wrong Credentials" })
+	}
+})
+
+/**
+ * Handles login functionality. Uses JWT for authentication.
+ * Works for all app users and is the endpoint that mobile
+ * watches
+ */
+router.post('/login-mobile', async (req, res) => {
 	const user = await User.findOne({
 		email: req.body.email,
 	})
@@ -63,13 +103,14 @@ router.post('/login', async (req, res) => {
 			}
 
 			return res.json(response)
+
 		}
 		else if (!bcrypt.compareSync(req.body.password, user.password))
 			throw new Error('Λάθος κωδικός')
 		else if (user === undefined)
 			throw new Error('Δεν υφίσταται χρήστης με αυτό το email')
 	} catch (error) {
-		return res.status(403).json({"error": "Wrong Credentials"})
+		return res.status(403).json({ "error": "Wrong Credentials" })
 	}
 })
 
