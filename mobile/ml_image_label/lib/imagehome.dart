@@ -31,10 +31,13 @@ class _MyHomePageState extends State<MyHomePage> {
   Future<File> file;
   String status = '';
   String base64Image;
+  var imageRect;
+  Future fetchRect;
   List datasets = List();
+  Future allLabels;
+  var datasetName;
   List labels = List();
   File tmpFile;
-  String error = 'Error';
   var imagex;
   var imagey;
   var datasetValue;
@@ -53,17 +56,38 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future<String> fetchDatasets() async {
     var response = await http.get('http://10.0.2.2:3001/api/v1/datasets');
+
     var allResponses = json.decode(response.body);
 
     setState(() {
-      allResponses.map((dataset) {
-        print(dataset["labels"].toString());
-      });
-      labelValue = allResponses[0]['labels'][0];
       datasets = allResponses;
     });
 
     return "Success";
+  }
+
+  Future<String> fetchLabels() async {
+    var response = await http.get(
+        'http://10.0.2.2:3001/api/v1/datasets/dataset/' +
+            datasetValue.toString());
+
+    var allResponses = json.decode(response.body);
+
+    setState(() {
+      var selected = allResponses[0];
+      datasetName = selected['name'];
+      labels = selected['labels'];
+    });
+
+    return "Success";
+  }
+
+  Future<String> drawRect() async {
+    setState(() {
+      imageRect = OpenPainter(imagex, imagey, width, height);
+    });
+
+    return 'Success';
   }
 
   @override
@@ -78,14 +102,9 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  uploadImg() {
-    if (null == tmpFile) {
-      setStatus(error);
-      return;
-    }
-
+  uploadImg() async {
     String fileName = tmpFile.path.split('/').last;
-    upload(fileName);
+    await upload(fileName);
   }
 
   upload(String fileName) async {
@@ -99,6 +118,7 @@ class _MyHomePageState extends State<MyHomePage> {
               "email": store.getString('email'),
               "isHumanChecked": false,
               "user_id": store.getString('id'),
+              "dataset": datasetName,
               "dataset_id": datasetValue,
               "object": [
                 {
@@ -115,43 +135,54 @@ class _MyHomePageState extends State<MyHomePage> {
               ]
             }))
         .then((result) {
-      print(result.body);
-      setStatus(result.statusCode == 200 ? result.body : error);
+      try {
+        if (result.statusCode == 200) {
+          clearData();
+        }
+      } catch (error) {
+        print(error);
+      }
+      setStatus(result.statusCode == 200 ? result.body : result.statusCode);
     }).catchError((error) {
       setStatus(error);
     });
   }
 
-  onTap(details) {
-    imagex = details.globalPosition.dx;
-    imagey = details.globalPosition.dy;
+  onPanStart(details) {
+    imagex = details.localPosition.dx;
+    imagey = details.localPosition.dy;
   }
 
   onPanUpdate(details) {
     if (details.delta.dx != null) tempWidth += details.delta.dx;
     if (details.delta.dy != null) tempHeight += details.delta.dy;
-    print(tempWidth);
-    print(tempHeight);
   }
 
   onPanEnd() async {
-    SharedPreferences store = await SharedPreferences.getInstance();
-
     width = tempWidth;
     height = tempHeight;
     tempWidth = 0;
     tempHeight = 0;
 
-    store.setDouble('width', width);
-    store.setDouble('height', height);
-    store.setDouble('x', imagex);
-    store.setDouble('y', imagey);
+    fetchRect = this.drawRect();
   }
+
+  void clearData() {
+    this.tmpFile = null;
+    this.base64Image = null;
+    this.width = null;
+    this.height = null;
+    this.imagex = null;
+    this.imagey = null;
+    this.labelValue = null;
+    this.datasetValue = null;
+    this.datasetName = null;
+  }
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomPadding: false,
       appBar: AppBar(
         title: Text('Upload Image/Data'),
         centerTitle: true,
@@ -159,43 +190,54 @@ class _MyHomePageState extends State<MyHomePage> {
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisSize: MainAxisSize.max,
           children: <Widget>[
             FutureBuilder<File>(
               future: file,
               builder: (BuildContext context, AsyncSnapshot<File> snapshot) {
                 if (snapshot.connectionState == ConnectionState.done &&
-                    null != snapshot.data) {
+                    snapshot.hasData) {
                   tmpFile = snapshot.data;
                   base64Image = base64Encode(snapshot.data.readAsBytesSync());
                   var image = Image.file(
                     snapshot.data,
                     fit: BoxFit.fitHeight,
                   );
-                  // print(image.height);
-
-                  return Stack(
-                    children: [
-                      Container(
-                        padding: EdgeInsets.all(12),
-                        child: new GestureDetector(
-                          onTap: () => print(snapshot.data),
-                          onPanStart: (details) => onTap(details),
-                          onPanUpdate: (details) => onPanUpdate(details),
-                          onPanEnd: (details) => onPanEnd(),
-                          child: Material(
-                            elevation: 3.0,
-                            child: image,
+                  return Container(
+                    margin: EdgeInsets.all(16),
+                    child: Stack(
+                      // fit: StackFit.loose,
+                      children: [
+                        Container(
+                          child: new GestureDetector(
+                            onPanStart: (details) => onPanStart(details),
+                            onPanUpdate: (details) => onPanUpdate(details),
+                            onPanEnd: (details) => onPanEnd(),
+                            child: Material(
+                              elevation: 3.0,
+                              child: image,
+                            ),
                           ),
                         ),
-                      ),
-                      Container(
-                        child: CustomPaint(
-                          painter: OpenPainter(),
-                        ),
-                      ),
-                    ],
+                        FutureBuilder(
+                            future: fetchRect,
+                            builder: (context, snapshot) {
+                              if (!snapshot.hasData) {
+                                return Container();
+                              } else if (snapshot.hasError) {
+                                return Text(snapshot.error);
+                              }
+                              return Container(
+                                child: CustomPaint(
+                                  painter: imageRect,
+                                ),
+                              );
+                            }),
+                      ],
+                    ),
                   );
-                } else if (null != snapshot.error) {
+                } else if (snapshot.hasError) {
                   return const Text(
                     'Error!',
                     textAlign: TextAlign.center,
@@ -203,10 +245,11 @@ class _MyHomePageState extends State<MyHomePage> {
                 } else {
                   return Container(
                       margin: EdgeInsets.all(25),
-                      child: FlatButton(
+                      child: RaisedButton(
+                        color: Colors.blue,
                         child: Text(
                           'Choose an image',
-                          style: TextStyle(fontSize: 20.0),
+                          style: TextStyle(fontSize: 20.0, color: Colors.white),
                         ),
                         onPressed: () {
                           chooseImage();
@@ -219,19 +262,7 @@ class _MyHomePageState extends State<MyHomePage> {
               height: 10.0,
             ),
             Container(
-              padding: EdgeInsets.all(12),
-              child: Text("X: " +
-                  imagex.toString() +
-                  " Y: " +
-                  imagey.toString() +
-                  " Width: " +
-                  width.toString() +
-                  " Height: " +
-                  height.toString()),
-            ),
-            Container(
-              width: 360,
-              height: 50,
+              margin: EdgeInsets.all(16),
               child: new DropdownButton(
                 isExpanded: true,
                 items: datasets
@@ -242,36 +273,46 @@ class _MyHomePageState extends State<MyHomePage> {
                 onChanged: (newVal) {
                   setState(() {
                     datasetValue = newVal;
-                    print(datasetValue);
+                    allLabels = this.fetchLabels();
                   });
                 },
                 value: datasetValue,
                 hint: Text("Please select a dataset"),
               ),
             ),
+            FutureBuilder(
+                future: allLabels,
+                // ignore: missing_return
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return Container(
+                      alignment: Alignment.center,
+                      margin: EdgeInsets.all(16),
+                      child: Text("Select a dataset first."),
+                    );
+                  } else if (snapshot.hasError) {
+                    return Text(snapshot.error);
+                  }
+                  return Container(
+                    margin: EdgeInsets.all(16),
+                    child: new DropdownButton(
+                      isExpanded: true,
+                      items: labels
+                          .map((label) => new DropdownMenuItem(
+                              child: new Text(label), value: label))
+                          .toList(),
+                      onChanged: (newVal) {
+                        setState(() {
+                          labelValue = newVal;
+                        });
+                      },
+                      value: labelValue,
+                      hint: Text("Please select a Label from the dataset"),
+                    ),
+                  );
+                }),
             Container(
-              width: 360,
-              height: 50,
-              child: new DropdownButton(
-                isExpanded: true,
-                items: datasets
-                    .map((dataset) => new DropdownMenuItem(
-                        child: new Text(dataset['name']),
-                        value: dataset['id'].toString()))
-                    .toList(),
-                onChanged: (newVal) {
-                  setState(() {
-                    datasetValue = newVal;
-                  });
-                },
-                value: datasetValue,
-                hint: Text("Please select a Label from the dataset"),
-              ),
-            ),
-            Container(
-              padding: EdgeInsets.all(6),
-              height: 50.0,
-              width: 360.0,
+              margin: EdgeInsets.all(16),
               child: RaisedButton(
                 child: Text(
                   'Upload Image',
@@ -291,18 +332,22 @@ class _MyHomePageState extends State<MyHomePage> {
 }
 
 class OpenPainter extends CustomPainter {
+  OpenPainter(this.x, this.y, this.width, this.height);
+
+  final double x;
+  final double y;
+  final double width;
+  final double height;
+
   @override
   void paint(Canvas canvas, Size size) async {
-    SharedPreferences store = await SharedPreferences.getInstance();
-
-    var paint1 = Paint()
-      ..color = Colors.lightGreen
+    var paint1 = new Paint()
+      ..color = Colors.lightGreenAccent
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 6.0;
-    canvas.drawRect(
-        Offset(store.getDouble('x'), store.getDouble('y')) &
-            Size(store.getDouble('width'), store.getDouble('height')),
-        paint1);
+      ..strokeWidth = 4.0;
+    canvas.drawRect(new Rect.fromLTWH(x, y, width, height), paint1);
+
+    // canvas.drawRect(Offset(x, y) & Size(width, height), paint1);
   }
 
   @override
