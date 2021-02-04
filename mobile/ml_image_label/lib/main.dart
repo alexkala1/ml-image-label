@@ -23,7 +23,8 @@ class loginSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('Lul'),
+          title: Text('ML-Image-Label'),
+          centerTitle: true,
         ),
         body: Padding(
             padding: EdgeInsets.all(10),

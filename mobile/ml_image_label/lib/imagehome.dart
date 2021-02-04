@@ -30,18 +30,22 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   Future<File> file;
   String status = '';
+  File tmpFile;
   String base64Image;
+
   var imageRect;
   Future fetchRect;
+
   List datasets = List();
-  Future allLabels;
   var datasetName;
+  var datasetValue;
+
+  Future allLabels;
   List labels = List();
-  File tmpFile;
+  var labelValue;
+
   var imagex;
   var imagey;
-  var datasetValue;
-  var labelValue;
   var tempWidth;
   var tempHeight;
   var width;
@@ -178,7 +182,6 @@ class _MyHomePageState extends State<MyHomePage> {
     this.datasetValue = null;
     this.datasetName = null;
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -346,8 +349,6 @@ class OpenPainter extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..strokeWidth = 4.0;
     canvas.drawRect(new Rect.fromLTWH(x, y, width, height), paint1);
-
-    // canvas.drawRect(Offset(x, y) & Size(width, height), paint1);
   }
 
   @override
