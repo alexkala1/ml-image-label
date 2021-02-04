@@ -26,6 +26,7 @@ router.post('/', upload.single('image'), async (req, res, next) => {
 			email: req.body.email,
 			user_id: req.body.user_id,
 			image: req.body.image,
+			dataset: req.body.dataset,
 			dataset_id: req.body.dataset_id,
 			imageName: req.body.imageName,
 			isVerified: false,

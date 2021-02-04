@@ -48,7 +48,10 @@ router.get('/dataset/:id', async (req, res) => {
 			id: dataset._id,
 			name: dataset.name,
 			labels: labels.map(label => {
-				return label.name, label._id
+				return label.name
+			}),
+			labelIds: labels.map(label => {
+				return label._id
 			})
 		}
 	}))

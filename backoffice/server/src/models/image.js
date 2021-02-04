@@ -8,6 +8,10 @@ const imageSchema = mongoose.Schema({
     "user_id": {
         required: true,
         type: String,
+	},
+	"dataset": {
+        required: true,
+        type: String,
     },
     "dataset_id": {
         required: true,
