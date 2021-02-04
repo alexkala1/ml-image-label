@@ -112,7 +112,7 @@ class loginSection extends StatelessWidget {
 
 login(email, password) async {
   final http.Response response = await http.post(
-    "http://10.0.2.2:3001/api/v1/auth/login",
+    "http://10.0.2.2:3001/api/v1/auth/login-mobile",
     headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
     },
