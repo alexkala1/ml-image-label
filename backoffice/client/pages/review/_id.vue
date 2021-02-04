@@ -144,11 +144,6 @@
 import moment from 'moment'
 
 export default {
-	asyncData({ params }) {
-		return {
-			id: params.id,
-		}
-	},
 	data() {
 		return {
 			snackbar: false,
@@ -158,6 +153,7 @@ export default {
 			loading: true,
 			canvasWidth: '',
 			canvasHeight: '',
+			object: '',
 		}
 	},
 	methods: {
@@ -176,23 +172,24 @@ export default {
 			this.canvasWidth = img.width
 			this.canvasHeight = img.height
 
-			console.log(img.width, img.height)
 			var ctx = cnvs.getContext('2d')
 			ctx.beginPath()
-			imgObject.forEach((label) => {
-				ctx.fillStyle = '#00ff00'
-				ctx.font = '16px Nunito'
-				ctx.fillText(label.label, label.bbox[0].x * 2, label.bbox[0].y * 2 - 10)
-				ctx.rect(
-					label.bbox[0].x * 2,
-					label.bbox[0].y * 2,
-					label.bbox[0].width * 2,
-					label.bbox[0].height * 2
-				)
-				ctx.lineWidth = 3
-				ctx.strokeStyle = '#00ff00'
-				ctx.stroke()
-			})
+			ctx.fillStyle = '#00ff00'
+			ctx.font = '16px Nunito'
+			ctx.fillText(
+				imgObject.label,
+				imgObject.bbox.x * 2,
+				imgObject.bbox.y * 2 - 10
+			)
+			ctx.rect(
+				imgObject.bbox.x * 2,
+				imgObject.bbox.y * 2,
+				imgObject.bbox.width * 2,
+				imgObject.bbox.height * 2
+			)
+			ctx.lineWidth = 3
+			ctx.strokeStyle = '#00ff00'
+			ctx.stroke()
 		},
 
 		async getImage() {

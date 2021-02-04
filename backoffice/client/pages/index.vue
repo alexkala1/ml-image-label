@@ -135,7 +135,7 @@
 										<h3>
 											Labels:
 											<span class="font-weight-light">
-												{{ image.object[0].label }}
+												{{ image.object.label }}
 											</span>
 										</h3>
 										<h3>
@@ -224,7 +224,7 @@ export default {
 				this.images = this.allImages.slice(0, 10)
 			} else {
 				this.images = this.allImages.filter((image) => {
-					return image.object[0].label.indexOf(filter)
+					return image.object.label.indexOf(filter)
 				})
 				console.log(filter)
 			}
