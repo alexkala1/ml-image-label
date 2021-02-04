@@ -92,11 +92,13 @@
 			</v-col>
 			<v-col cols="12" md="9">
 				<img
+					width="720px"
+					height="1020px"
 					id="theImg"
 					:src="`data:image/jpeg;base64,${image.image}`"
 					class="grey lighten-2"
 				/>
-				<canvas id="myCanvas" :width="1000" :height="1000"> </canvas>
+				<canvas id="myCanvas" width="720px" height="1020px"> </canvas>
 				<template v-slot:placeholder>
 					<v-row
 						class="fill-height ma-0"
@@ -180,12 +182,12 @@ export default {
 			imgObject.forEach((label) => {
 				ctx.fillStyle = '#00ff00'
 				ctx.font = '16px Nunito'
-				ctx.fillText(label.label, label.bbox[0].x, label.bbox[0].y - 10)
+				ctx.fillText(label.label, label.bbox[0].x * 2, label.bbox[0].y * 2 - 10)
 				ctx.rect(
-					label.bbox[0].x,
-					label.bbox[0].y,
-					label.bbox[0].width,
-					label.bbox[0].height
+					label.bbox[0].x * 2,
+					label.bbox[0].y * 2,
+					label.bbox[0].width * 2,
+					label.bbox[0].height * 2
 				)
 				ctx.lineWidth = 3
 				ctx.strokeStyle = '#00ff00'
