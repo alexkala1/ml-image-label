@@ -21,24 +21,26 @@ const upload = multer({
 // Create new image
 router.post('/', upload.single('image'), async (req, res, next) => {
 
-	console.log(req.body.image)
+	try {
+		const image = new Image({
+			email: req.body.email,
+			user_id: req.body.user_id,
+			image: req.body.image,
+			dataset: req.body.dataset,
+			dataset_id: req.body.dataset_id,
+			imageName: req.body.imageName,
+			isVerified: false,
+			isHumanChecked: false,
+			object: req.body.object,
+			date: Date.now()
+		});
 
-	const image = new Image({
-		email: req.body.email,
-		user_id: req.body.user_id,
-		image: req.body.image,
-		dataset: req.body.dataset,
-		dataset_id: req.body.dataset_id,
-		imageName: req.body.imageName,
-		isVerified: false,
-		isHumanChecked: false,
-		object: req.body.object,
-		date: Date.now()
-	});
+		await image.save();
 
-	await image.save();
-
-	return res.json(image);
+		return res.json(image);
+	} catch (error) {
+		throw new Error(error)
+	}
 })
 
 // Get all images
@@ -48,7 +50,7 @@ router.get('/allImages', async (req, res, next) => {
 
 		return res.json(images)
 	} catch (error) {
-		return res.json(error)
+		throw new Error(error)
 	}
 })
 
@@ -59,7 +61,7 @@ router.get('/rejected', async (req, res, next) => {
 
 		return res.json(images)
 	} catch (error) {
-		return res.json(error)
+		throw new Error(error)
 	}
 })
 
@@ -70,7 +72,7 @@ router.get('/verified', async (req, res, next) => {
 
 		return res.json(images)
 	} catch (error) {
-		return res.json(error)
+		throw new Error(error)
 	}
 })
 
@@ -81,7 +83,7 @@ router.get('/verified/:user_id', async (req, res, next) => {
 
 		return res.json(images)
 	} catch (error) {
-		return res.json(error)
+		throw new Error(error)
 	}
 })
 
@@ -92,7 +94,7 @@ router.get('/history', async (req, res) => {
 
 		return res.json(images)
 	} catch (error) {
-		return res.json(error)
+		throw new Error(error)
 	}
 })
 
@@ -103,7 +105,7 @@ router.get('/nonReviewed', async (req, res) => {
 
 		return res.json(images)
 	} catch (error) {
-		return res.json(error)
+		throw new Error(error)
 	}
 })
 
@@ -114,7 +116,7 @@ router.get('/:_id', async (req, res, next) => {
 
 		return res.json(image)
 	} catch (error) {
-		return res.json(error)
+		throw new Error(error)
 	}
 })
 // Verify an image
@@ -125,13 +127,14 @@ router.put('/verify/:_id', async (req, res, next) => {
 		image.reviewedAt = Date.now();
 		image.isVerified = true;
 
-		await image.save();
+		// console.log(image)
 
-		console.log(image)
+		await image.save();
 
 		return res.json(image);
 	} catch (error) {
-		return res.json(error);
+		console.log(error)
+		throw new Error(error)
 	}
 })
 
@@ -149,7 +152,7 @@ router.put('/reject/:_id', async (req, res, next) => {
 
 		return res.json(image);
 	} catch (error) {
-		return res.json(error);
+		throw new Error(error)
 	}
 })
 
@@ -160,7 +163,7 @@ router.delete('/:_id', async (req, res, next) => {
 
 		return res.json(image)
 	} catch (error) {
-		return res.json(error)
+		throw new Error(error)
 	}
 })
 

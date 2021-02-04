@@ -56,12 +56,13 @@ router.post('/login', async (req, res) => {
 			const response = {
 				firstName: user.firstName,
 				lastName: user.lastName,
+				userType: user.userType,
 				email: user.email,
 				id: user._id,
 				token,
 			}
 
-			return res.json({ response })
+			return res.json(response)
 		}
 		else if (!bcrypt.compareSync(req.body.password, user.password))
 			throw new Error('Λάθος κωδικός')

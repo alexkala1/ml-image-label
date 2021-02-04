@@ -17,9 +17,9 @@
 				</v-row>
 			</v-card>
 		</v-dialog>
-		<v-row align="center" justify="center">
-			<v-col cols="3">
-				<v-card height="700">
+		<v-row justify="center">
+			<v-col cols="12" md="3">
+				<v-card height="100%">
 					<v-card-title class="subheading font-weight-bold">
 						{{ image.imageName }}
 					</v-card-title>
@@ -90,32 +90,33 @@
 					</v-list>
 				</v-card>
 			</v-col>
-			<v-col cols="9">
-				<v-img
-					max-height="700"
-					contain
+			<v-col cols="12" md="9">
+				<img
+					width="720px"
+					height="1020px"
+					id="theImg"
 					:src="`data:image/jpeg;base64,${image.image}`"
 					class="grey lighten-2"
-				>
-					<template v-slot:placeholder>
-						<v-row
-							class="fill-height ma-0"
-							align="center"
-							justify="center"
-						>
-							<v-progress-circular
-								indeterminate
-								color="grey lighten-5"
-							></v-progress-circular>
-						</v-row>
-					</template>
-				</v-img>
+				/>
+				<canvas id="myCanvas" width="720px" height="1020px"> </canvas>
+				<template v-slot:placeholder>
+					<v-row
+						class="fill-height ma-0"
+						align="center"
+						justify="center"
+					>
+						<v-progress-circular
+							indeterminate
+							color="grey lighten-5"
+						></v-progress-circular>
+					</v-row>
+				</template>
 			</v-col>
 			<v-col class="d-flex justify-end">
-				<v-btn color="orange" @click="approve()" text class="mr-2"
+				<v-btn color="primary" @click="approve()" text class="mr-2"
 					>Approve</v-btn
 				>
-				<v-btn color="orange" @click="reject()" text class="mr-2"
+				<v-btn color="primary" @click="reject()" text class="mr-2"
 					>Reject</v-btn
 				>
 			</v-col>
@@ -155,11 +156,43 @@ export default {
 			message: '',
 			image: '',
 			loading: true,
+			canvasWidth: '',
+			canvasHeight: '',
 		}
 	},
 	methods: {
 		properDate(date) {
 			return moment(date).format('MMMM Do YYYY, h:mm:ss a')
+		},
+
+		drawCoords() {
+			const imgObject = this.image.object
+			var img = document.getElementById('theImg')
+			var cnvs = document.getElementById('myCanvas')
+
+			cnvs.style.position = 'absolute'
+			cnvs.style.left = img.offsetLeft + 'px'
+			cnvs.style.top = img.offsetTop + 'px'
+			this.canvasWidth = img.width
+			this.canvasHeight = img.height
+
+			console.log(img.width, img.height)
+			var ctx = cnvs.getContext('2d')
+			ctx.beginPath()
+			imgObject.forEach((label) => {
+				ctx.fillStyle = '#00ff00'
+				ctx.font = '16px Nunito'
+				ctx.fillText(label.label, label.bbox[0].x * 2, label.bbox[0].y * 2 - 10)
+				ctx.rect(
+					label.bbox[0].x * 2,
+					label.bbox[0].y * 2,
+					label.bbox[0].width * 2,
+					label.bbox[0].height * 2
+				)
+				ctx.lineWidth = 3
+				ctx.strokeStyle = '#00ff00'
+				ctx.stroke()
+			})
 		},
 
 		async getImage() {
@@ -183,11 +216,9 @@ export default {
 			console.log(this.$route.params.id)
 
 			try {
-				const response = await this.$axios.put(
+				await this.$axios.put(
 					`http://localhost:3001/api/v1/images/verify/${this.$route.params.id}`
 				)
-
-				console.log(response)
 
 				this.snackbar = true
 				this.snackbarColor = 'green'
@@ -207,7 +238,7 @@ export default {
 
 		async reject() {
 			try {
-				const response = await this.$axios.put(
+				await this.$axios.put(
 					`http://localhost:3001/api/v1/images/reject/${this.$route.params.id}`
 				)
 
@@ -228,8 +259,8 @@ export default {
 		},
 	},
 
-	mounted() {
-		this.getImage()
+	async mounted() {
+		await this.getImage(), this.drawCoords()
 	},
 }
 </script>

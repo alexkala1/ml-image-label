@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -120,7 +121,17 @@ login(email, password) async {
     }),
   );
 
+  print(response.statusCode);
+
   if (response.statusCode == 200) {
+    SharedPreferences store = await SharedPreferences.getInstance();
+    var user = jsonDecode(response.body);
+    store.setString('firstName', user['firstName']);
+    store.setString('lastName', user['lastName']);
+    store.setString('email', user['email']);
+    store.setString('userType', user['userType']);
+    store.setString('id', user['id']);
+
     return true;
   } else
     return false;

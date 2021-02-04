@@ -17,70 +17,138 @@ class registerApp extends StatelessWidget {
   }
 }
 
+
 class registerSection extends StatelessWidget {
-  var firstName;
-  var lastName;
-  var email;
-  var password;
-  var confirmPassword;
+  TextEditingController firstNameController = TextEditingController();
+  TextEditingController lastNameController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  TextEditingController passwordConfirmedController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoPageScaffold(
-        navigationBar: CupertinoNavigationBar(
-          automaticallyImplyLeading: false,
+    return Scaffold(
+        appBar: AppBar(
+          title: Text('Register'),
         ),
-        child: SafeArea(
-            child: ListView(padding: const EdgeInsets.all(16), children: [
-          Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8),
-              child: CupertinoTextField(
-                  placeholder: "First Name",
-                  onChanged: (value) {
-                    firstName = value;
-                  })),
-          Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8),
-              child: CupertinoTextField(
-                  placeholder: "Last Name",
-                  onChanged: (value) {
-                    lastName = value;
-                  })),
-          Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8),
-              child: CupertinoTextField(
-                  placeholder: "Email",
-                  onChanged: (value) {
-                    email = value;
-                  })),
-          Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8),
-              child: CupertinoTextField(
-                  placeholder: "Password",
-                  obscureText: true,
-                  onChanged: (value) {
-                    password = value;
-                  })),
-          Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8),
-              child: CupertinoTextField(
-                  placeholder: "Confirm Password",
-                  obscureText: true,
-                  onChanged: (value) {
-                    confirmPassword = value;
-                  })),
-          RaisedButton(
-              onPressed: () {
-                print(email);
-                print(password);
-                register(firstName, lastName, email, password, confirmPassword);
-              },
-              color: Colors.blue,
-              textColor: Colors.white,
-              child: Text("Register"))
-        ])));
+        body: Padding(
+            padding: EdgeInsets.all(10),
+            child: ListView(
+              children: <Widget>[
+                Container(
+                    alignment: Alignment.center,
+                    padding: EdgeInsets.all(10),
+                    child: Text(
+                      'Image Label for machine learning',
+                      style: TextStyle(
+                        color: Colors.blue,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 30,
+                      ),
+                    )),
+                Container(
+                    alignment: Alignment.center,
+                    padding: EdgeInsets.all(10),
+                    child: Text(
+                      'Register',
+                      style: TextStyle(fontSize: 20),
+                    )),
+                Container(
+                  padding: EdgeInsets.all(10),
+                  child: TextField(
+                    controller: firstNameController,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'First Name',
+                    ),
+                  ),
+                ),
+                Container(
+                  padding: EdgeInsets.all(10),
+                  child: TextField(
+                    controller: lastNameController,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Last Name',
+                    ),
+                  ),
+                ),
+                Container(
+                  padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
+                  child: TextField(
+                    controller: emailController,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Email',
+                    ),
+                  ),
+                ),
+                Container(
+                  padding: EdgeInsets.all(10),
+                  child: TextField(
+                    obscureText: true,
+                    controller: passwordController,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Password',
+                    ),
+                  ),
+                ),
+                Container(
+                  padding: EdgeInsets.all(10),
+                  child: TextField(
+                    obscureText: true,
+                    controller: passwordConfirmedController,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Confirm Password',
+                    ),
+                  ),
+                ),
+                Container(
+                    height: 100,
+                    padding: EdgeInsets.fromLTRB(10, 50, 10, 0),
+                    child: RaisedButton(
+                      textColor: Colors.white,
+                      color: Colors.blue,
+                      child: Text('Register'),
+                      onPressed: () async {
+                        print(firstNameController.text);
+                        print(passwordController.text);
+                        register(firstNameController.text, lastNameController.text, emailController.text, passwordController.text, passwordConfirmedController.text);
+                        if (await register(
+                            firstNameController.text, lastNameController.text, emailController.text, passwordController.text, passwordConfirmedController.text) ==
+                            true) {
+                          Navigator.pushNamed(context, '/image_label');
+                        }
+                      },
+                    )),
+                Container(
+                    padding: EdgeInsets.fromLTRB(10, 25, 10, 0),
+                    child: Row(
+                      children: <Widget>[
+                        Text('Do you have an account?'),
+                        FlatButton(
+                          textColor: Colors.blue,
+                          child: Text(
+                            'Sign In',
+                            style: TextStyle(fontSize: 20),
+                          ),
+                          onPressed: () {
+                            Navigator.pushNamed(context, '/image_label');
+                          },
+                        )
+                      ],
+                      mainAxisAlignment: MainAxisAlignment.center,
+                    ))
+              ],
+            )));
   }
 }
+
+
+
+
 
 register(firstName, lastName, email, password, confirmPassword) async {
   if (password == confirmPassword) {

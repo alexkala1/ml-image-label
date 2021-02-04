@@ -1,5 +1,4 @@
 const mongoose = require('mongoose')
-const Schema = mongoose.Schema
 
 const imageSchema = mongoose.Schema({
     "email": {
@@ -9,8 +8,8 @@ const imageSchema = mongoose.Schema({
     "user_id": {
         required: true,
         type: String,
-    },
-    "dataset": {
+	},
+	"dataset": {
         required: true,
         type: String,
     },
@@ -47,7 +46,7 @@ const imageSchema = mongoose.Schema({
         type: [{
             label: {
                 required: true,
-                type: String
+                type: Array
             },
             bbox: {
                 type: [{
