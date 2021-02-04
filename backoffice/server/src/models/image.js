@@ -43,13 +43,13 @@ const imageSchema = mongoose.Schema({
      */
     "object": {
         required: true,
-        type: [{
+        type: {
             label: {
                 required: true,
-                type: Array
+                type: String
             },
             bbox: {
-                type: [{
+                type: {
                     x: {
                         required: true,
                         type: Number
@@ -66,9 +66,9 @@ const imageSchema = mongoose.Schema({
                         required: true,
                         type: Number
                     }
-                }],
+                },
             }
-        }]
+        }
     },
     date: {
         required: true,
