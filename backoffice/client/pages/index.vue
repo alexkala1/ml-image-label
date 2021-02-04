@@ -12,7 +12,7 @@
 				</v-text-field>
 			</v-col>
 		</v-row>
-		<v-row justify="center" v-if="images.length > 0 && !loading">
+		<v-row justify="center">
 			<v-col cols="2">
 				<h3 class="heading text-center font-weight-light py-5">
 					Datasets and labels
@@ -88,7 +88,10 @@
 					</div>
 				</v-col>
 				<v-col cols="10">
-					<v-row justify="center">
+					<v-row
+						justify="center"
+						v-if="images.length > 0 && !loading"
+					>
 						<v-col
 							cols="12"
 							sm="6"
@@ -161,23 +164,25 @@
 							</v-skeleton-loader>
 						</v-col>
 					</v-row>
+					<v-row justify="center" align="center" v-else>
+						<v-col cols="12">
+							<p class="display-1 text-center">No data!</p>
+						</v-col>
+					</v-row>
+					<v-row justify="center" align="center">
+						<v-col cols="12">
+							<v-pagination
+								v-model="page"
+								class="my-4"
+								total-visible="7"
+								:length="paginationLength"
+								@input="changePage(page)"
+								circle
+							></v-pagination>
+						</v-col>
+					</v-row>
 				</v-col>
 			</v-row>
-			<v-row justify="center" align="center">
-				<v-pagination
-					v-model="page"
-					class="my-4"
-					total-visible="7"
-					:length="paginationLength"
-					@input="changePage(page)"
-					circle
-				></v-pagination>
-			</v-row>
-		</v-row>
-		<v-row justify="center" align="center" v-else>
-			<v-col cols="12">
-				<p class="display-1 text-center">No data!</p>
-			</v-col>
 		</v-row>
 	</v-container>
 </template>
@@ -218,7 +223,7 @@ export default {
 				this.paginationLength = Math.ceil(this.allImages.length / 10)
 				this.images = this.allImages.slice(0, 10)
 			} else {
-				this.images = this.allImages.filter(image => {
+				this.images = this.allImages.filter((image) => {
 					return image.object[0].label.indexOf(filter)
 				})
 				console.log(filter)
