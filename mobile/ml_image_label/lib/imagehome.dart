@@ -124,19 +124,15 @@ class _MyHomePageState extends State<MyHomePage> {
               "user_id": store.getString('id'),
               "dataset": datasetName,
               "dataset_id": datasetValue,
-              "object": [
-                {
-                  "label": labelValue,
-                  "bbox": [
-                    {
-                      "x": imagex,
-                      "y": imagey,
-                      "width": width,
-                      "height": height,
-                    }
-                  ]
+              "object": {
+                "label": labelValue,
+                "bbox": {
+                  "x": imagex,
+                  "y": imagey,
+                  "width": width,
+                  "height": height,
                 }
-              ]
+              }
             }))
         .then((result) {
       try {
