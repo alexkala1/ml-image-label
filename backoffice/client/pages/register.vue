@@ -61,7 +61,6 @@
 
 <script>
 export default {
-	auth: false,
 	name: 'Register',
 	components: {},
 	data() {
