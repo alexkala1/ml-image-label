@@ -1,5 +1,4 @@
 const express = require('express');
-const emojis = require('./emojis');
 const users = require('./users')
 const datasets = require('./datasets')
 const images = require('./images')
@@ -13,7 +12,6 @@ router.get('/', (req, res) => {
 	});
 });
 
-router.use('/emojis', emojis);
 router.use('/users', users);
 router.use('/datasets', datasets);
 router.use('/images', images);
