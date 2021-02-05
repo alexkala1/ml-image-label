@@ -191,7 +191,7 @@ export default {
 			imageFilters: ['In review', 'All Images', 'Verified', 'Rejected'],
 			images: [],
 			filteredImages: [],
-			paginationLength: '',
+			paginationLength: 0,
 			search: '',
 			datasets: [],
 			selectedLabels: [],
