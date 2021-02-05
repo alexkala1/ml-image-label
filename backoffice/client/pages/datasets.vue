@@ -60,9 +60,11 @@
 																editedDataset
 															)
 														"
-														@keypress.enter="addLabel(
+														@keypress.enter="
+															addLabel(
 																editedDataset
-															)"
+															)
+														"
 													>
 													</v-text-field>
 												</v-col>
@@ -146,7 +148,11 @@
 										<v-btn
 											color="blue darken-1"
 											text
-											@click="deleteDatasetConfirm(editedDataset)"
+											@click="
+												deleteDatasetConfirm(
+													editedDataset
+												)
+											"
 											>OK</v-btn
 										>
 										<v-spacer></v-spacer>
@@ -243,7 +249,6 @@ export default {
 		},
 
 		async deleteDatasetConfirm(item) {
-
 			console.log(item)
 			await this.$axios.delete(
 				`http://localhost:3001/api/v1/datasets/${item.id}`
@@ -274,11 +279,11 @@ export default {
 			})
 		},
 
-		removeLabel(item, index) {
+		async removeLabel(item, index) {
 			return item.labels.splice(index, 1)
 		},
 
-		addLabel(item) {
+		async addLabel(item) {
 			console.log(item)
 			item.labels.push(this.newLabel)
 			this.newLabel = ''
@@ -294,12 +299,28 @@ export default {
 					}
 				)
 
+				const { data } = await this.$axios.get(
+					`http://localhost:3001/api/v1/datasets/dataset/${this.editedDataset.id}`
+				)
+
 				let labels = JSON.parse(
 					JSON.stringify(this.editedDataset.labels)
 				)
 				let labelIds = JSON.parse(
 					JSON.stringify(this.editedDataset.labelIds)
 				)
+
+				labels.forEach(async (label) => {
+					if (!data[0].labels.includes(label)) {
+						await this.$axios.post(
+							`http://localhost:3001/api/v1/datasets/label/`,
+							{
+								name: label,
+								dataset_id: this.editedDataset.id
+							}
+						)
+					}
+				})
 
 				labelIds.forEach(async (id, index) => {
 					await this.$axios.put(
