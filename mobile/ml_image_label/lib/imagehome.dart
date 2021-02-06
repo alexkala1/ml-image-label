@@ -8,6 +8,7 @@ import 'package:flutter/painting.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter/services.dart';
 
 void main() {
   runApp(imageUpload());
@@ -181,6 +182,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    print(tmpFile);
+    print(base64Image);
     return Scaffold(
       appBar: AppBar(
         title: Text('Upload Image/Data'),
@@ -236,30 +239,21 @@ class _MyHomePageState extends State<MyHomePage> {
                       ],
                     ),
                   );
-                } else if (snapshot.hasError) {
+                } if (snapshot.hasError) {
                   return const Text(
                     'Error!',
                     textAlign: TextAlign.center,
                   );
                 } else {
-                  return Container(
-                      margin: EdgeInsets.all(25),
-                      child: RaisedButton(
-                        color: Colors.blue,
-                        child: Text(
-                          'Choose an image',
-                          style: TextStyle(fontSize: 20.0, color: Colors.white),
-                        ),
-                        onPressed: () {
-                          chooseImage();
-                        },
-                      ));
+                  return Container();
                 }
               },
             ),
             SizedBox(
               height: 10.0,
             ),
+
+
             Container(
               margin: EdgeInsets.all(16),
               child: new DropdownButton(
@@ -311,7 +305,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   );
                 }),
             Container(
-              margin: EdgeInsets.all(16),
+              margin: EdgeInsets.fromLTRB(16,0,16,0),
               child: RaisedButton(
                 child: Text(
                   'Upload Image',
@@ -320,9 +314,31 @@ class _MyHomePageState extends State<MyHomePage> {
                 color: Colors.blue,
                 onPressed: () {
                   uploadImg();
+                  navigateToSubPage(context);
                 },
               ),
             ),
+            Container (
+              margin: EdgeInsets.fromLTRB(16,0,16,0),
+              child: Center(
+                child: Text(
+                  "or",
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ),
+            Container(
+                margin: EdgeInsets.fromLTRB(16,0,16,0),
+                child: RaisedButton(
+                  color: Colors.blue,
+                  child: Text(
+                    'Choose an image',
+                    style: TextStyle(fontSize: 20.0, color: Colors.white),
+                  ),
+                  onPressed: () {
+                    chooseImage();
+                  },
+                )),
           ],
         ),
       ),
@@ -349,4 +365,49 @@ class OpenPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(CustomPainter oldDelegate) => true;
+}
+
+
+class SubPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Upload Completed!'),
+        backgroundColor: Colors.blue,
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text('Your Upload Is Completed.'),
+            ButtonBar(
+              children: <Widget>[
+                FlatButton(
+                  child: Text('Upload Another Label'),
+                  color: Colors.blue,
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
+                FlatButton(
+                  child: Text('Exit The App'),
+                  color: Colors.blue,
+                  onPressed: () {
+                    SystemNavigator.pop();
+                  },
+                ),
+              ],
+                alignment:MainAxisAlignment.center,
+                mainAxisSize:MainAxisSize.max
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+Future navigateToSubPage(context) async {
+  Navigator.push(context, MaterialPageRoute(builder: (context) => SubPage()));
 }

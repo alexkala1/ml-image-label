@@ -34,7 +34,7 @@ class loginSection extends StatelessWidget {
                     alignment: Alignment.center,
                     padding: EdgeInsets.all(10),
                     child: Text(
-                      'Image Label for machine learning',
+                      'Image Labeling for machine learning',
                       style: TextStyle(
                         color: Colors.blue,
                         fontWeight: FontWeight.w500,
